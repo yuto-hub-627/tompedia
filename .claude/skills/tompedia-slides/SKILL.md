@@ -11,6 +11,7 @@ description: とんペディア／とんペディア_ラボのスライド資料
 参照ファイル（作業前に必ず読む）:
 - `references/design-spec.md` … 色・フォント・フレーム4種・座標・文字数の上限
 - `references/layout-catalog.md` … 22ページの型、差し替える要素、内容から型を選ぶ判断表
+- `references/extra-layouts.md` … テンプレートにない型（実例の資料から持ってくる18種）と、見つからなかった型
 - `references/question-template.md` … 資料ごとの質問mdのひな形
 
 PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わない。.pptxが必要なときは、このスキルでCanvaに作ってから `export-design` で書き出す。
@@ -52,7 +53,8 @@ PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わな�
 決め方のルール：
 - 表紙：外部向け＝P1、ラボ内部・MTG・勉強会＝P2、営業部＝P3。
 - 章が3つ以上 → P4 目次＋章ごとに P5（1行タイトル）／P10（2行タイトル）。
-- 本文は基本 P6（見出し＋本文）。理想／現状・Before/After は実例 `DAHXIFJiZ5I` のP3。
+- 本文は基本 P6（見出し＋本文）。テンプレートにない形（理想／現状、2カラム、3ステップなど）は `extra-layouts.md` の型を使う。
+- **`layout-catalog.md` にも `extra-layouts.md` にもない型が必要なら、作る前にユーザーに相談する**（質問mdに書く）。表・タイムテーブルは公式フレームの実例がないので必ず相談。
 - 最後のCHECK!（P22）は**指示があったときだけ**入れる。
 - 紹介資料の実例ページ（P12〜P21）の数字は最新なので、団体・アプリ紹介ではそのまま使ってよい。
 - 1スライド1メッセージ。箇条書きは3〜5項目、2段まで。文字数の上限（`design-spec.md`）を超えるなら2枚に分ける。
@@ -64,7 +66,7 @@ PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わな�
    - 同じ型を複数枚使うとき（P6を5枚など）は、番号を繰り返して渡す。
    - 繰り返しが受け付けられなかった場合は、ユニークなページで作ってから `copy-design` の `page_numbers` で並べ直した新デザインを作る（例：`[1,2,2,2,3]`）。それも不可なら `merge-designs`（`insert_pages`、同じデザインを source にする）で複製する。`merge-designs` は実行前に操作内容をユーザーに見せて承認をもらう。
    - **初回はどの方法が通ったかを、このファイルのこの節に追記する。**
-2. テンプレート外の型（理想／現状など）は、`merge-designs` で実例デザインから該当ページを挿入する。
+2. テンプレート外の型は、`extra-layouts.md` の元デザイン（`DAHLVv4QdWU`／`DAHXIFJiZ5I`）から `merge-designs`（`insert_pages`）で該当ページを挿入する。
 3. タイトルを `YYYY-MM-DD_資料名` にする（`update_title`）。
 
 ### 3-2. 文章を差し替える
@@ -87,7 +89,7 @@ PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わな�
 1. `read-design` で全ページのサムネイルを取り、確認する：文字のはみ出し・重なり、元の文言の残り、ロゴ・装飾が動いていないか。
 2. 直せるものは直す（文章を短くする → それでもだめなら `resize_element`。フォントサイズは最後の手段）。
 3. サムネイルを見せて「この内容で保存してよいですか？」と1回だけ聞く。**OKが出るまで `commit` しない**（Canvaの仕様。ユーザーの方針は「構成の確認は不要」なので、ここ以外では確認を挟まない）。
-4. 保存したら `move-item-to-folder` で保存先フォルダに移す（フォルダは `references/question-template.md` の既定値、または質問mdの回答）。
+4. 保存したら `move-item-to-folder` で保存先フォルダ「中西悠仁」（`FAHYd2F4Mo0`、プロジェクトの個人フォルダ内）に移す。
 5. 編集URL、残っている作業（写真・要確認）を伝え、`outline.md` にデザインIDとURLを追記してコミットする。
 
 ## Step 5：修正
