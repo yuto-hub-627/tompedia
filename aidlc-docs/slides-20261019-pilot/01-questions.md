@@ -9,7 +9,7 @@
 ### Q1. 作る資料の名前と、使う日は？
 （例：「11月全体会 運営からの共有」11/10）
 
-[Answer]:
+[Answer]:GivingCampaginとは？、10/20の全体会
 
 ### Q2. 元になる内容はありますか？
 - A. このmdの下に箇条書きで書く
@@ -27,12 +27,12 @@
 - C. 東北大生（勉強会・イベントの参加者）
 - X. その他
 
-[Answer]:
+[Answer]:A
 
 ### Q4. この資料で、見た人にどうなってほしいですか？（1〜2文）
 （例：運営の方針を理解して、来週までにアンケートに答えてもらう）
 
-[Answer]:
+[Answer]:givingcampaignについて理解して、自分のやることが分かっている状態
 
 ### Q5. 発表の時間と、スライドの枚数の目安は？
 - A. 5分（5〜7枚）
@@ -40,34 +40,87 @@
 - C. 20分以上（15枚〜）
 - X. その他（枚数を記入）
 
-[Answer]:
+[Answer]:A
 
 ## 3. 表紙
 
 ### Q6. 表紙に入れる文字は？
-- タイトル：
+- タイトル：GivingCampaginとは？
 - 上に入れる会議名・イベント名（任意）：
-- 日付：
-- 発表者（所属・名前）：
+- 日付：10/20
+- 発表者（所属・名前）：中西悠仁（株式会社Alumnote アセット本部　/　とんペディア_ラボ 営業部/広報部）
 
-[Answer]:
+[Answer]:イベント名以外入力した
 
 ## 4. 中身
 
 ### Q7. 章立て（話す順番）を書いてください。わからなければ「おまかせ」で、Q2の内容から案を作ります。
 （例：1. 今月の振り返り　2. 来月の予定　3. お願い）
 
-[Answer]:
+[Answer]:構成案：
+
+1. ギビングキャンペーンとは（まず一言で説明）
+- Giving Campaignは、全国の大学生が部活動や研究の挑戦を発信し、卒業生・保護者・一般の方から寄付を募る、国内最大級の大学チャリティーイベントです。
+2. 皆さんにやってほしいこと（箇条書きで「これとこれとこれ」と軽く触れる）
+- 相互投票を約束している団体への投票
+- みなさん自身のとんペディアラボへの投票
+- みなさんの保護者へのとんペディアラボへの投票依頼
+3. なぜやってほしいのか（ギビングキャンペーンの重要性を説く）
+
+    1. ギビングキャンペーンはすごい額のお金がもらえる
+    昨年1位の東北大学ボート部は￥127000もらってる
+    2. 企業賞といったものから、色々な企業とのつながりが生まれる
+    感謝の会でつながった→DeNAとかSHIFTとかTDKとか
+    3. 全国の大学の学生団体との連携が相互投票によって生まれるため、これからトンペディアが他の大学と連携して何かをしたいとなった時に動きやすい
+
+4. 皆さんへのToDo（最後にもう一度「これをこうしてほしい」と具体的に説明する）
+現状相互投票を組んでいる団体一覧→表にしてください。
+
+10/18(日)　20:00-21:00
+豊橋技術科学大学ロボコン同好会
+https://tut.2026.giving-campaign.jp/groups?id=97759d6f-3a9f-46b9-9615-dbd6ca927bf2
+10/19(月) 20:00-21:00
+宮大べ～こんず
+https://miyaki-u.2026.giving-campaign.jp/groups?id=8b34a2f8-8996-4d32-abbb-129203a072f9
+KiSA
+https://kpu-m.2026.giving-campaign.jp/groups?id=a38a6639-6caf-495b-b3fb-5ac303919253
+10/22(木)　20:00-21:00
+大阪教育大学ゆるスポーツサークル
+https://osaka-kyoiku.2026.giving-campaign.jp/groups?id=849cce86-223b-43bd-bbbd-552d98c7534b
+10/24(土)　20:00-21:00
+芝浦工業大学 TBT
+https://student-union.2026.giving-campaign.jp/groups?id=0551ddbf-97d0-4ed4-834f-129ec5cc14b4
+10/25(日)　20:00-21:00
+熊本大学競技ダーツ部
+https://kumagaku.2026.giving-campaign.jp/groups?id=3d04e5ec-f86c-4c84-b5f3-693c95fc5ea6
+投票指定日のない団体
+神戸学院大学祭中央実行委員会
+https://kobegakuin.2026.giving-campaign.jp/groups?id=6c96dc9c-638f-4113-88b3-79cd6c47746a
+茨城大学 学生フォーミュラ部
+https://ibaraki.2026.giving-campaign.jp/groups?id=62320796-5535-4341-abce-92b9c1469170
+立命館大学Ri-one SSL
+https://ritsumei.2026.giving-campaign.jp/groups?image-type=group-ad&group-id=f69fdaae-b882-4798-b67f-3dd7b097c762&group=f69fdaae-b882-4798-b67f-3dd7b097c762
+金沢大学フォーミュラ研究会
+https://kanazawa-u.2026.giving-campaign.jp/groups?id=50d1d4cc-3369-4ec6-932d-dd3b1febe2e3
+青山大学相模原祭
+https://aoyama.2026.giving-campaign.jp/groups?id=4757f2c3-51a1-42c7-9b4a-54682797d1f4
+新潟大学　にいがたカレッジキャット
+https://niigata-u.2026.giving-campaign.jp/groups?id=083ee082-7f52-41d9-afdc-f8d87cf374e8
+鳴門教育大学　学生宿舎うずしお村
+https://naruto-u.2026.giving-campaign.jp/groups?group=7bce669a-2d8c-4151-931c-0beb4f4835c4&image-type=group-ad&group-id=7bce669a-2d8c-4151-931c-0beb4f4835c4 
+
+
+このような構成でお願いします。
 
 ### Q8. 文章はどうしますか？（章ごとでもOK）
 - A. 渡した文章をそのまま使う（はみ出すときだけ短くする）
 - B. 要点からClaudeが書く
 （例：1:A、2:B、3:B）
 
-[Answer]:
+[Answer]:A（claudeが考えた方がいいと思うところはB）
 
 ### Q9. 必ず入れたい数字・固有名詞・言い回しはありますか？
-[Answer]:
+[Answer]:ない
 
 ### Q10. 使いたい見せ方があれば選んでください（複数可。なければ空欄でおまかせ）
 - A. 理想／現状（Before/After）
@@ -86,4 +139,4 @@
 - A. 使う（Drive・Canva・チャット添付で渡す。場所を記入）
 - B. 使わない（写真のページは作らない）
 
-[Answer]:
+[Answer]:B
