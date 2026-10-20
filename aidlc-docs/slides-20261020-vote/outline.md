@@ -23,7 +23,7 @@
 | 5 | 茨城大学 学生フォーミュラ部 | MAHYhpI_vfI |
 | 6 | 立命館大学 Ri-one SSL | MAHYhjYRcgY |
 | 7 | 金沢大学 フォーミュラ研究会 | MAHYhrIB704 |
-| 8 | 青山大学 相模原祭 | MAHYhvSPZQE |
+| 8 | 青山学院大学 相模原祭 | MAHYhvSPZQE |
 | 9 | 新潟大学 にいがたカレッジキャット | MAHYht1Jl3s |
 | 10 | 鳴門教育大学 学生宿舎うずしお村 | MAHYhkkabJI |
 | 11 | 香川高専 メタバース愛好会 | MAHYhnSXjLA |
@@ -31,6 +31,6 @@
 QRコードはPython `qrcode`（誤り訂正M、912×912px）で作り、OpenCVで全件読み取れることを確認してから `create-upload-url` でアップロードした。
 
 ## 仮定・要確認
-- 「青山大学相模原祭」は依頼のまま（正式名が「青山学院大学」なら要修正）。
+- 「青山大学」→「青山学院大学」に修正（2026-10-20、ユーザー指示）。
 - 「宮大べ～こんず」「KiSA」は大学名が不明なので団体名だけ。
-- 全体会のスライド（`DAHYgW2hjAo`）とは別のデザインにした。付け足す場合は `merge-designs` で後ろに入れる。
+- 全体会のスライド（`DAHYgW2hjAo`）の最後（P7〜P17）にも付け足した（2026-10-20、ユーザー指示。`merge-designs` の `modify_existing_design` でデザインごと挿入）。単体のデザイン `DAHYhqDR18U` も残っている。
