@@ -1,6 +1,7 @@
 # 構成（試作：GivingCampaignとは？／10/20 全体会）
 
-- Canva：`DAHYgW2hjAo`「2026-10-20_GivingCampaignとは？」（保存前・確認待ち）
+- Canva：`DAHYgW2hjAo`「2026-10-20_GivingCampaignとは？」（2026-10-20 保存済み、フォルダ「中西悠仁」に移動済み）
+- 編集URL：https://www.canva.com/d/vPs19Nf3L-swOy6
 - 元デザイン（作業用、不要）：`DAHYgVzQw1E`（テンプレート22ページ）、`DAHYgTcZ5xE`（試しに作った4ページ）
 
 | P | 型 | ページタイトル | 大見出し／メッセージ | 本文 | 文章 |
