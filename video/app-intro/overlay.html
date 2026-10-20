@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Tompedia app intro overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800;900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --purple: #825dab;
+    --purple-dark: #5b3d80;
+    --lavender: #efe7f8;
+    --yellow: #ffd23f;
+    --ink: #2b2233;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; background: transparent; overflow: hidden; }
+  body { font-family: "M PLUS Rounded 1c", sans-serif; color: var(--ink); position: relative; }
+  .abs { position: absolute; }
+  .center { left: 0; right: 0; text-align: center; }
+  #veil { inset: 0; background: #fff; }
+  .scene { inset: 0; opacity: 0; }
+
+  /* header */
+  #header { top: 70px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 18px; }
+  #header img.icon { width: 76px; height: 76px; }
+  #header img.wm { height: 62px; }
+
+  /* problems */
+  .bubble {
+    background: #fff; border: 6px solid var(--purple); border-radius: 60px;
+    padding: 34px 48px; font-size: 62px; font-weight: 800; color: var(--purple-dark);
+    box-shadow: 0 14px 0 rgba(130,93,171,.25); white-space: nowrap;
+  }
+  .bubble::after {
+    content: ""; position: absolute; bottom: -34px; width: 0; height: 0;
+    border-left: 22px solid transparent; border-right: 22px solid transparent;
+    border-top: 34px solid var(--purple);
+  }
+  .bubble.l::after { left: 90px; }
+  .bubble.r::after { right: 90px; }
+  #b1 { top: 330px; left: 70px; }
+  #b2 { top: 610px; right: 60px; }
+  #b3 { top: 890px; left: 70px; }
+  #trouble { width: 640px; left: 220px; top: 1230px; }
+
+  /* solution */
+  #sol-icon { width: 380px; height: 380px; left: 350px; top: 520px; border-radius: 90px; box-shadow: 0 30px 60px rgba(91,61,128,.35); }
+  #sol-text { top: 1010px; font-weight: 900; line-height: 1.25; }
+  #sol-text .s { font-size: 86px; display: block; }
+  #sol-text .b { font-size: 148px; color: var(--purple); display: block; }
+
+  /* features */
+  .feat-card {
+    left: 60px; right: 60px; top: 1180px; background: #fff; border-radius: 56px;
+    padding: 64px 60px 70px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
+    border: 6px solid var(--purple);
+  }
+  .feat-num {
+    position: absolute; top: -78px; left: 50px; width: 150px; height: 150px; border-radius: 50%;
+    background: var(--yellow); color: var(--purple-dark); font-size: 72px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; border: 6px solid #fff;
+  }
+  .feat-title { font-size: 128px; font-weight: 900; color: var(--purple); line-height: 1.1; margin-top: 30px; }
+  .feat-desc { font-size: 58px; font-weight: 800; margin-top: 26px; line-height: 1.4; }
+  .feat-note { font-size: 40px; font-weight: 500; color: #6d6177; margin-top: 18px; line-height: 1.5; }
+  .feat-tag {
+    top: 180px; left: 50%; transform: translateX(-50%);
+    background: var(--purple); color: #fff; font-size: 46px; font-weight: 800;
+    padding: 14px 40px; border-radius: 40px; white-space: nowrap;
+  }
+
+  /* more */
+  #more-title { top: 300px; font-size: 92px; font-weight: 900; color: var(--purple); }
+  #more-title em { font-style: normal; background: linear-gradient(transparent 62%, var(--yellow) 62%); padding: 0 8px; }
+  .chip {
+    left: 50%; background: #fff; color: var(--purple-dark); border: 6px solid var(--purple);
+    font-size: 66px; font-weight: 800; padding: 26px 64px; border-radius: 80px; white-space: nowrap;
+    box-shadow: 0 12px 0 rgba(130,93,171,.25);
+  }
+
+  /* numbers */
+  .stat { left: 0; right: 0; text-align: center; }
+  .stat .lbl { font-size: 58px; font-weight: 800; }
+  .stat .num { font-size: 190px; font-weight: 900; color: var(--purple); line-height: 1.05; letter-spacing: -2px; }
+  .stat .unit { font-size: 80px; font-weight: 900; color: var(--purple); margin-left: 6px; }
+  .stat .pre { font-size: 64px; font-weight: 900; color: var(--purple); margin-right: 10px; }
+
+  /* end */
+  #end-icon { width: 250px; height: 250px; left: 415px; top: 470px; border-radius: 60px; box-shadow: 0 20px 40px rgba(91,61,128,.3); }
+  #end-sub { top: 790px; font-size: 64px; font-weight: 800; color: var(--purple-dark); }
+  #end-wm { width: 900px; left: 90px; top: 900px; }
+  #end-url {
+    top: 1150px; left: 50%; background: var(--purple); color: #fff; font-size: 64px; font-weight: 800;
+    padding: 26px 70px; border-radius: 80px; white-space: nowrap; letter-spacing: 1px;
+  }
+  #end-cta { top: 1290px; font-size: 46px; font-weight: 800; color: var(--purple-dark); }
+  #point { width: 560px; left: 470px; top: 1360px; }
+</style>
+</head>
+<body>
+<div id="veil" class="abs"></div>
+
+<div id="header" class="abs">
+  <img class="icon" src="ASSETS/icon.png" alt="">
+  <img class="wm" src="ASSETS/wordmark.png" alt="">
+</div>
+
+<!-- 3.0–7.0 あるある -->
+<div id="sc-problem" class="scene abs">
+  <div id="b1" class="bubble l abs">時間割、どこにメモしてる？</div>
+  <div id="b2" class="bubble r abs">この授業、楽単？鬼単？</div>
+  <div id="b3" class="bubble l abs">授業の中身、どこで調べる？</div>
+  <img id="trouble" class="abs" src="ASSETS/tonpei_trouble.png" alt="">
+</div>
+
+<!-- 7.0–9.0 解決 -->
+<div id="sc-solution" class="scene abs">
+  <img id="sol-icon" class="abs" src="ASSETS/icon.png" alt="">
+  <div id="sol-text" class="abs center"><span class="s">ぜんぶ、</span><span class="b">とんペディア</span><span class="s">で。</span></div>
+</div>
+
+<!-- 9.0–22.0 機能 -->
+<div id="sc-f1" class="scene abs">
+  <div class="feat-tag abs">東北大生のためのアプリ</div>
+  <div class="feat-card abs">
+    <div class="feat-num">01</div>
+    <div class="feat-title">時間割</div>
+    <div class="feat-desc">授業を登録して、<br>自分だけの時間割に</div>
+  </div>
+</div>
+<div id="sc-f2" class="scene abs">
+  <div class="feat-tag abs">東北大生のためのアプリ</div>
+  <div class="feat-card abs">
+    <div class="feat-num">02</div>
+    <div class="feat-title">鬼仏表</div>
+    <div class="feat-desc">先輩たちの授業評価がわかる</div>
+    <div class="feat-note">鬼＝きびしい／仏＝やさしい<br>授業の口コミ掲示板</div>
+  </div>
+</div>
+<div id="sc-f3" class="scene abs">
+  <div class="feat-tag abs">東北大生のためのアプリ</div>
+  <div class="feat-card abs">
+    <div class="feat-num">03</div>
+    <div class="feat-title">シラバス検索</div>
+    <div class="feat-desc">授業の内容を、<br>サクッと検索</div>
+  </div>
+</div>
+
+<!-- 22.0–24.8 その他 -->
+<div id="sc-more" class="scene abs">
+  <div id="more-title" class="abs center"><em>こんな機能も</em><br>あります！</div>
+  <div class="chip abs" style="top:640px">空き教室検索</div>
+  <div class="chip abs" style="top:830px">地下鉄・バス時刻表</div>
+  <div class="chip abs" style="top:1020px">GPA計算機</div>
+  <div class="chip abs" style="top:1210px">サークル紹介</div>
+  <div class="chip abs" style="top:1400px">イベント掲示板</div>
+</div>
+
+<!-- 24.8–27.6 数字 -->
+<div id="sc-stats" class="scene abs">
+  <div class="stat abs" style="top:330px"><div class="num"><span data-count="6720">0</span><span class="unit">人</span></div><div class="lbl">が利用中</div></div>
+  <div class="stat abs" style="top:780px"><div class="lbl">今年度の新入生の</div><div class="num"><span data-count="95">0</span><span class="unit">%</span></div><div class="lbl">が登録</div></div>
+  <div class="stat abs" style="top:1270px"><div class="lbl">毎日</div><div class="num"><span class="pre">約</span><span data-count="1800">0</span><span class="unit">人</span></div><div class="lbl">が使っています</div></div>
+</div>
+
+<!-- 27.6–30.0 締め -->
+<div id="sc-end" class="scene abs">
+  <img id="end-icon" class="abs" src="ASSETS/icon.png" alt="">
+  <div id="end-sub" class="abs center">東北大生のためのアプリ</div>
+  <img id="end-wm" class="abs" src="ASSETS/wordmark.png" alt="">
+  <div id="end-url" class="abs">info.tompedia.jp</div>
+  <div id="end-cta" class="abs center">くわしくはホームページへ</div>
+  <img id="point" class="abs" src="ASSETS/tonpei_point.png" alt="">
+</div>
+
+<script>
+// All motion is a pure function of time so every frame renders deterministically.
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, t0, dur) => clamp((t - t0) / dur);
+const easeOut = p => 1 - Math.pow(1 - p, 3);
+const easeOutBack = p => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+// scene windows [start, end] in seconds
+const SCENES = {
+  '#sc-problem':  [3.0, 7.0],
+  '#sc-solution': [7.0, 9.0],
+  '#sc-f1':       [9.0, 13.5],
+  '#sc-f2':       [13.5, 18.0],
+  '#sc-f3':       [18.0, 22.0],
+  '#sc-more':     [22.0, 24.8],
+  '#sc-stats':    [24.8, 27.6],
+  '#sc-end':      [27.6, 30.01],
+};
+const FADE = 0.22;
+
+function sceneOpacity(t, [a, b]) {
+  if (t < a || t >= b) return 0;
+  return Math.min(prog(t, a, FADE), 1 - prog(t, b - FADE, FADE));
+}
+
+// pop-in: scale from `from` with overshoot, plus fade
+function pop(el, t, t0, { dur = 0.45, from = 0.4, dy = 0, extra = '' } = {}) {
+  const p = prog(t, t0, dur);
+  const s = from + (1 - from) * easeOutBack(p);
+  el.style.opacity = clamp(p * 3);
+  el.style.transform = `${extra} translateY(${(1 - easeOut(p)) * dy}px) scale(${s})`;
+}
+function slideUp(el, t, t0, { dur = 0.5, dy = 300 } = {}) {
+  const p = easeOut(prog(t, t0, dur));
+  el.style.opacity = clamp(p * 2);
+  el.style.transform = `translateY(${(1 - p) * dy}px)`;
+}
+
+function veilOpacity(t) {
+  if (t < 3.0) return 0;
+  const base = 0.80, feat = 0.42, end = 0.96;
+  let v = base * easeOut(prog(t, 3.0, 0.35));
+  // lighter veil while the app footage is the subject
+  if (t >= 9.0 && t < 22.0) {
+    const inP = easeOut(prog(t, 9.0, 0.4)), outP = easeOut(prog(t, 21.6, 0.4));
+    v = base + (feat - base) * inP + (base - feat) * outP;
+  }
+  if (t >= 27.6) v = base + (end - base) * easeOut(prog(t, 27.6, 0.4));
+  return v;
+}
+
+function setTime(t) {
+  $('#veil').style.opacity = veilOpacity(t);
+  const hdr = t >= 3.0 && t < 27.6 ? Math.min(prog(t, 3.0, 0.3), 1 - prog(t, 27.4, 0.2)) : 0;
+  $('#header').style.opacity = hdr;
+
+  for (const [sel, win] of Object.entries(SCENES)) $(sel).style.opacity = sceneOpacity(t, win);
+
+  // problems
+  pop($('#b1'), t, 3.25, { dy: 40 });
+  pop($('#b2'), t, 4.25, { dy: 40 });
+  pop($('#b3'), t, 5.25, { dy: 40 });
+  slideUp($('#trouble'), t, 3.1, { dy: 500 });
+  $('#trouble').style.transform += ` rotate(${Math.sin(t * 6) * 2}deg)`;
+
+  // solution
+  pop($('#sol-icon'), t, 7.05, { from: 0.2, dur: 0.55 });
+  slideUp($('#sol-text'), t, 7.35, { dy: 120, dur: 0.45 });
+
+  // features
+  for (const [sel, t0] of [['#sc-f1', 9.0], ['#sc-f2', 13.5], ['#sc-f3', 18.0]]) {
+    slideUp($(`${sel} .feat-card`), t, t0 + 0.1, { dy: 260, dur: 0.55 });
+    pop($(`${sel} .feat-num`), t, t0 + 0.35, { from: 0.2, dur: 0.45 });
+    pop($(`${sel} .feat-tag`), t, t0 + 0.2, { extra: 'translateX(-50%)', from: 0.6 });
+  }
+
+  // more features
+  pop($('#more-title'), t, 22.05, { from: 0.6 });
+  $$('#sc-more .chip').forEach((el, i) => pop(el, t, 22.35 + i * 0.22, { extra: 'translateX(-50%)', from: 0.3, dy: 30 }));
+
+  // stats with count-up
+  $$('#sc-stats .stat').forEach((el, i) => {
+    const t0 = 24.85 + i * 0.45;
+    slideUp(el, t, t0, { dy: 80, dur: 0.4 });
+    const span = el.querySelector('[data-count]');
+    const target = +span.dataset.count;
+    const v = Math.round(target * easeOut(prog(t, t0, 0.9)));
+    span.textContent = v.toLocaleString('en-US');
+  });
+
+  // end
+  pop($('#end-icon'), t, 27.65, { from: 0.3 });
+  slideUp($('#end-sub'), t, 27.8, { dy: 60, dur: 0.4 });
+  pop($('#end-wm'), t, 27.9, { from: 0.7 });
+  pop($('#end-url'), t, 28.2, { extra: 'translateX(-50%)', from: 0.5 });
+  slideUp($('#end-cta'), t, 28.4, { dy: 40, dur: 0.4 });
+  slideUp($('#point'), t, 28.3, { dy: 600, dur: 0.6 });
+  $('#point').style.transform += ` rotate(${Math.sin(t * 5) * 3}deg)`;
+}
+window.setTime = setTime;
+</script>
+</body>
+</html>
