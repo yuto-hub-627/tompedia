@@ -26,9 +26,11 @@ BG=(
   "intro 38 2.4 2.4"           # 25.4–27.8 数字
   "intro 42 2.2 2.2"           # 27.8–30.0 締め
 )
-# Feature segments shown sharp inside the phone: "bgIndex startSec(in final video) navFix"
-# navFix=1: the recording has the old ホーム+時間割 bottom nav, so paste the full one over it
-PHONE=("2 8.4 0" "3 13.2 1" "4 18.0 1")
+# Feature segments shown sharp inside the phone: "bgIndex startSec(in final video) navMode"
+# The Figma用 recordings predate the current bottom nav, so the latest one (from intro.mp4) is pasted over it.
+#   value = y to paste the new nav at. The 鬼仏表/シラバス検索 recordings' old nav sits where the new one
+#   goes (2236); the 時間割 recording's starts 42px higher, so paste it there (only white is left below it)
+PHONE=("2 8.4 2194" "3 13.2 2236" "4 18.0 2236")
 
 clip() { # file start srcDur outDur vf out
   local speed; speed=$(python3 -c "print($3/$4)")
@@ -59,35 +61,19 @@ m = Image.new('L', (w, h), 0)
 ImageDraw.Draw(m).rounded_rectangle((0, 0, w - 1, h - 1), radius=54, fill=255)
 m.save(out)
 PY
-# full bottom nav (ホーム/シラバス検索/時間割/川内空き教室/イベントカレンダー) from the 時間割 recording:
-# the white bar from y=2208 down plus the round 時間割 button that sticks up above it
-ffmpeg -v error -y -ss 9 -i "$footage/timetable.mp4" -frames:v 1 "$work/nav_src.png"
-python3 -I - "$work/nav_src.png" "$work/navbar.png" <<'PY'
-import sys
-from PIL import Image, ImageDraw
-src = Image.open(sys.argv[1]).convert('RGBA')
-top, bar, (cx, cy, r) = 2186, 2208, (585, 2276, 84)
-patch = src.crop((0, top, src.width, src.height))
-alpha = Image.new('L', patch.size, 0)
-d = ImageDraw.Draw(alpha)
-d.rectangle((0, bar - top, patch.width, patch.height), fill=255)
-d.ellipse((cx - r, cy - r - top, cx + r, cy + r - top), fill=255)
-patch.putalpha(alpha)
-patch.save(sys.argv[2])
-PY
+# latest bottom nav (ホーム/トピックス/時間割/イベント/アカウント, nothing selected) from intro.mp4 at 8s:
+# shadow + white bar from y=2236 down; the round 時間割 button spans y 2238-2399
+NAV_Y=2236
+ffmpeg -v error -y -ss 8 -i "$footage/intro.mp4" -frames:v 1 -vf "crop=1170:2532-${NAV_Y}:0:${NAV_Y}" "$work/navbar.png"
 
 # 1) phone clips with rounded corners and alpha fades (RGBA .mov)
 phone_inputs=(); chain=""; prev="0:v"; n=0
 for p in "${PHONE[@]}"; do
-  read -r idx at navfix <<< "$p"; read -r f ss sd od <<< "${BG[$idx]}"
-  if [[ "$navfix" == 1 ]]; then
-    clip "$f" "$ss" "$sd" "$od" "setsar=1" "$work/phone${n}_raw.mp4"
-    ffmpeg -v error -y -i "$work/phone${n}_raw.mp4" -i "$work/navbar.png" -filter_complex \
-      "[0:v][1:v]overlay=0:2186,${SCREEN_CROP},scale=${PW}:${PH},setsar=1,format=yuv420p" \
-      -c:v libx264 -crf 14 -preset fast "$work/phone$n.mp4"
-  else
-    clip "$f" "$ss" "$sd" "$od" "${SCREEN_CROP},scale=${PW}:${PH},setsar=1" "$work/phone$n.mp4"
-  fi
+  read -r idx at navy <<< "$p"; read -r f ss sd od <<< "${BG[$idx]}"
+  clip "$f" "$ss" "$sd" "$od" "setsar=1" "$work/phone${n}_raw.mp4"
+  ffmpeg -v error -y -i "$work/phone${n}_raw.mp4" -i "$work/navbar.png" -filter_complex \
+    "[0:v][1:v]overlay=0:${navy},${SCREEN_CROP},scale=${PW}:${PH},setsar=1,format=yuv420p" \
+    -c:v libx264 -crf 14 -preset fast "$work/phone$n.mp4"
   fo=$(python3 -c "print($od-0.22)")
   ffmpeg -v error -y -i "$work/phone$n.mp4" -i "$work/mask.png" -filter_complex \
     "[0:v]format=rgba[c];[1:v]format=gray[m];[c][m]alphamerge,fade=t=in:st=0:d=0.22:alpha=1,fade=t=out:st=${fo}:d=0.22:alpha=1" \
