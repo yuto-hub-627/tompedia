@@ -133,9 +133,9 @@
   <div id="sol-text" class="abs center"><span class="s">ぜんぶ、</span><span class="b">とんペディア<small>で。</small></span></div>
 </div>
 
-<!-- 9.0–22.0 機能 -->
+<!-- 機能: one bezel for all three feature scenes; the phone recordings crossfade inside it -->
+<div id="bezel" class="bezel abs"></div>
 <div id="sc-f1" class="scene abs">
-  <div class="bezel abs"></div>
   <img id="tp-morning" class="tonpei" src="ASSETS/tonpei_morning.png" alt="">
   <div class="feat-card abs">
     <div class="feat-num">01</div>
@@ -144,7 +144,6 @@
   </div>
 </div>
 <div id="sc-f2" class="scene abs">
-  <div class="bezel abs"></div>
   <img id="tp-magnifier" class="tonpei" src="ASSETS/tonpei_magnifier.png" alt="">
   <div class="feat-card abs">
     <div class="feat-num">02</div>
@@ -154,7 +153,6 @@
   </div>
 </div>
 <div id="sc-f3" class="scene abs">
-  <div class="bezel abs"></div>
   <img id="tp-book" class="tonpei" src="ASSETS/tonpei_book.png" alt="">
   <div class="feat-card abs">
     <div class="feat-num">03</div>
@@ -212,7 +210,7 @@ const S = {
   end:      [27.8, 30.01],
 };
 const at = (scene, dt) => S[scene][0] + dt;
-const FADE = 0.22;
+const FADE = 0.3;
 
 // sound effect cues [time, sound, gain, pitch]; build.sh reads them via window.SFX_CUES
 const SFX_CUES = [[0.15, 'pop', 0.9, 0.8]];
@@ -242,9 +240,11 @@ cue(at('end', 0.6), 'pop', 0.8, 0.9);
 cue(at('end', 0.7), 'boing', 0.6);
 window.SFX_CUES = SFX_CUES;
 
+// scenes fade over their boundaries, so neighbours crossfade instead of dipping to nothing
 function sceneOpacity(t, [a, b]) {
-  if (t < a || t >= b) return 0;
-  return Math.min(prog(t, a, FADE), 1 - prog(t, b - FADE, FADE));
+  const h = FADE / 2;
+  if (t < a - h || t >= b + h) return 0;
+  return Math.min(prog(t, a - h, FADE), 1 - prog(t, b - h, FADE));
 }
 
 // pop-in: scale from `from` with overshoot, plus fade
@@ -279,6 +279,8 @@ function veilOpacity(t) {
 function setTime(t) {
   $('#veil').style.opacity = veilOpacity(t);
   $('#veil').classList.toggle('hole', t >= FEAT[0] && t < FEAT[1]);
+  // matches the phone track's 0.35s fade in/out in build.sh
+  $('#bezel').style.opacity = t >= FEAT[0] && t < FEAT[1] ? Math.min(prog(t, FEAT[0], 0.35), 1 - prog(t, FEAT[1] - 0.35, 0.35)) : 0;
   const hdr = t >= S.problem[0] && t < S.end[0] ? Math.min(prog(t, S.problem[0], 0.3), 1 - prog(t, S.end[0] - 0.2, 0.2)) : 0;
   $('#header').style.opacity = hdr;
 
