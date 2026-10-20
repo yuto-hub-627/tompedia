@@ -281,7 +281,7 @@ function veilOpacity(t) {
 function setTime(t) {
   $('#veil').style.opacity = veilOpacity(t);
   $('#veil').classList.toggle('hole', t >= FEAT[0] && t < FEAT[1]);
-  // matches the phone track's 0.35s fade in/out in build.sh
+  // the phone track appears at once (white on white) and fades out over 0.35s in build.sh
   $('#bezel').style.opacity = t >= FEAT[0] && t < FEAT[1] ? Math.min(prog(t, FEAT[0], 0.35), 1 - prog(t, FEAT[1] - 0.35, 0.35)) : 0;
   const hdr = t >= S.problem[0] && t < S.end[0] ? Math.min(prog(t, S.problem[0], 0.3), 1 - prog(t, S.end[0] - 0.2, 0.2)) : 0;
   $('#header').style.opacity = hdr;

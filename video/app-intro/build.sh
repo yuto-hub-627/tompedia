@@ -19,7 +19,7 @@ SCREEN_CROP="crop=1170:2392:0:140"
 BG=(
   "intro 0 3.6 3.6"            # 3.0–6.6   あるある: home screen
   "intro 6 1.8 1.8"            # 6.6–8.4   解決: timetable
-  "timetable 7.6 4.08 4.8"     # 8.4–13.2  時間割 (0.85x)
+  "timetable 8.6 4.32 4.8"     # 8.4–13.2  時間割: starts at rest at the top, opens a class, closes it (0.9x)
   "kibutsu 20.5 4.32 4.8"      # 13.2–18.0 鬼仏表: results -> detail (0.9x)
   "intro 13 4.8 4.8"           # 18.0–22.8 シラバス検索: a syllabus page opening and scrolling (1x)
   "intro 31 2.6 2.6"           # 22.8–25.4 その他
@@ -104,8 +104,12 @@ done
 # features swipe to the left like pages, in step with the description card in overlay.html
 xfade_chain "$work/phones.mp4" slideleft "${durs[@]}"
 fo=$(python3 -c "print($total-0.35)")
+# the app zooms up from the middle of a white screen at first, like an app being launched. No fade-in:
+# the screen starts white on the white 「ぜんぶ、とんペディアで。」 scene, so it can appear at full opacity
+zs="(0.55+0.45*(1-pow(1-min(1,t/0.4),3)))"
+launch="scale=w='trunc(${PW}*${zs}/2)*2':h='trunc(${PH}*${zs}/2)*2':eval=frame,pad=${PW}:${PH}:'(ow-iw)/2':'(oh-ih)/2':color=white:eval=frame"
 ffmpeg -v error -y -i "$work/phones.mp4" -loop 1 -i "$work/mask.png" -filter_complex \
-  "[0:v]format=rgba[c];[1:v]format=gray[m];[c][m]alphamerge=shortest=1,fade=t=in:st=0:d=0.35:alpha=1,fade=t=out:st=${fo}:d=0.35:alpha=1" \
+  "[0:v]${launch},format=rgba[c];[1:v]format=gray[m];[c][m]alphamerge=shortest=1,fade=t=out:st=${fo}:d=0.35:alpha=1" \
   -t "$total" -c:v qtrle "$work/phones.mov"
 
 echo "== composite"
