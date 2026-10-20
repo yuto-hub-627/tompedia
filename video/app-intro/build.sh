@@ -10,24 +10,24 @@ mkdir -p "$work"
 W=1080; H=1920; FPS=30
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
 # phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
-PX=210; PY=170; PW=660; PH=1162
+PX=230; PY=170; PW=620; PH=1092
 # part of the 1170x2532 recordings shown in the phone: no status bar, no bottom nav
 SCREEN_CROP="crop=1170:2060:0:140"
 
 # Edit list: "file start srcDur outDur" — srcDur is sped up/slowed to fit outDur.
 # Background behind the veil, 27s after the 3s logo opening.
 BG=(
-  "intro 0 4 4"            # 3.0–7.0  あるある: home screen
-  "intro 6 2 2"            # 7.0–9.0  解決: timetable
-  "timetable 7.6 4.5 4.5"  # 9.0–13.5 時間割
-  "kibutsu 18.5 7 4.5"     # 13.5–18.0 鬼仏表: results -> detail
-  "syllabus 3.2 6 4"       # 18.0–22.0 シラバス検索: form -> results -> detail
-  "intro 31 2.8 2.8"       # 22.0–24.8 その他
-  "intro 38 2.8 2.8"       # 24.8–27.6 数字
-  "intro 42 2.4 2.4"       # 27.6–30.0 締め
+  "intro 0 3.6 3.6"            # 3.0–6.6   あるある: home screen
+  "intro 6 1.8 1.8"            # 6.6–8.4   解決: timetable
+  "timetable 7.6 4.08 4.8"     # 8.4–13.2  時間割 (0.85x)
+  "kibutsu 20.5 4.32 4.8"      # 13.2–18.0 鬼仏表: results -> detail (0.9x)
+  "syllabus 3.6 4.0 4.8"       # 18.0–22.8 シラバス検索: form -> results -> detail (0.83x)
+  "intro 31 2.6 2.6"           # 22.8–25.4 その他
+  "intro 38 2.4 2.4"           # 25.4–27.8 数字
+  "intro 42 2.2 2.2"           # 27.8–30.0 締め
 )
 # Feature segments shown sharp inside the phone: "bgIndex startSec(in final video)"
-PHONE=("2 9.0" "3 13.5" "4 18.0")
+PHONE=("2 8.4" "3 13.2" "4 18.0")
 
 clip() { # file start srcDur outDur vf out
   local speed; speed=$(python3 -c "print($3/$4)")
@@ -80,8 +80,10 @@ ffmpeg -v error -y -i "$assets/pop.mp4" -i "$work/bg.mp4" -filter_complex \
 # 3) phones under the text layer
 ffmpeg -v error -y -i "$work/base.mp4" "${phone_inputs[@]}" -filter_complex "${chain%;}" -map "[$prev]" \
   -c:v libx264 -crf 12 -preset fast -pix_fmt yuv420p "$work/with_phones.mp4"
-# 4) text / Tonpei / veil layer on top
-ffmpeg -v error -y -i "$work/with_phones.mp4" -framerate $FPS -i "$work/frames/%05d.png" \
-  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]" -map "[v]" -t 30 -r $FPS \
-  -c:v libx264 -profile:v high -crf 20 -preset slow -movflags +faststart "$out"
+# 4) sound effects, cued from the overlay's timeline
+python3 -I "$here/sfx.py" "$work/frames/sfx_cues.json" "$work/sfx.wav" 30
+# 5) text / Tonpei / veil layer on top, plus audio
+ffmpeg -v error -y -i "$work/with_phones.mp4" -framerate $FPS -i "$work/frames/%05d.png" -i "$work/sfx.wav" \
+  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]" -map "[v]" -map 2:a -t 30 -r $FPS \
+  -c:v libx264 -profile:v high -crf 20 -preset slow -c:a aac -b:a 160k -movflags +faststart "$out"
 ffprobe -v error -show_entries format=duration,size -of compact "$out"

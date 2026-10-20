@@ -52,25 +52,25 @@
   #sol-text .b small { font-size: 68px; color: var(--ink); margin-left: 4px; }
 
   /* features: ffmpeg puts the app recording (status bar and bottom nav cropped off) under this layer
-     at x210 y170 660x1162; the veil gets a matching hole and the bezel is a ring drawn on top */
+     at x230 y170 620x1092; the veil gets a matching hole and the bezel is a ring drawn on top */
   #veil.hole {
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M264 170H816A54 54 0 0 1 870 224V1278A54 54 0 0 1 816 1332H264A54 54 0 0 1 210 1278V224A54 54 0 0 1 264 170Z'/></svg>");
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M284 170H796A54 54 0 0 1 850 224V1208A54 54 0 0 1 796 1262H284A54 54 0 0 1 230 1208V224A54 54 0 0 1 284 170Z'/></svg>");
   }
   .bezel {
-    left: 194px; top: 154px; width: 692px; height: 1194px; border-radius: 70px;
+    left: 214px; top: 154px; width: 652px; height: 1124px; border-radius: 70px;
     border: 16px solid #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
   }
   .feat-card {
-    left: 60px; right: 60px; top: 1255px; background: #fff; border-radius: 52px;
+    left: 60px; right: 60px; top: 1310px; background: #fff; border-radius: 52px;
     padding: 46px 56px 52px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
     border: 6px solid var(--purple);
   }
   .feat-num {
-    position: absolute; top: -64px; left: 48px; width: 124px; height: 124px; border-radius: 50%;
-    background: var(--yellow); color: var(--purple-dark); font-size: 60px; font-weight: 900;
-    display: flex; align-items: center; justify-content: center; border: 6px solid #fff;
+    position: absolute; top: 48px; left: 50px; width: 112px; height: 112px; border-radius: 50%;
+    background: var(--yellow); color: var(--purple-dark); font-size: 54px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
   }
-  .feat-title { font-size: 104px; font-weight: 900; color: var(--purple); line-height: 1.1; margin-top: 30px; }
+  .feat-title { font-size: 104px; font-weight: 900; color: var(--purple); line-height: 1.1; margin-left: 132px; }
   .feat-desc { font-size: 52px; font-weight: 800; margin-top: 18px; line-height: 1.4; }
   .feat-note { font-size: 36px; font-weight: 500; color: #6d6177; margin-top: 12px; line-height: 1.45; }
 
@@ -103,9 +103,9 @@
   /* Tonpei cameos */
   .tonpei { position: absolute; }
   #tp-cheer { width: 400px; left: 340px; top: 1360px; }
-  #tp-morning { width: 250px; left: 4px; top: 1000px; }
-  #tp-magnifier { width: 250px; left: 826px; top: 1000px; }
-  #tp-book { width: 260px; left: 0px; top: 1020px; }
+  #tp-morning { width: 200px; left: 8px; top: 1070px; }
+  #tp-magnifier { width: 200px; left: 874px; top: 1070px; }
+  #tp-book { width: 206px; left: 4px; top: 1080px; }
   #tp-dance { width: 300px; left: 750px; top: 1580px; }
   #tp-megaphone { width: 300px; left: 30px; top: 1640px; }
 </style>
@@ -200,18 +200,47 @@ const easeOutBack = p => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
-// scene windows [start, end] in seconds
-const SCENES = {
-  '#sc-problem':  [3.0, 7.0],
-  '#sc-solution': [7.0, 9.0],
-  '#sc-f1':       [9.0, 13.5],
-  '#sc-f2':       [13.5, 18.0],
-  '#sc-f3':       [18.0, 22.0],
-  '#sc-more':     [22.0, 24.8],
-  '#sc-stats':    [24.8, 27.6],
-  '#sc-end':      [27.6, 30.01],
+// scene windows [start, end] in seconds; everything below is relative to these
+const S = {
+  problem:  [3.0, 6.6],
+  solution: [6.6, 8.4],
+  f1:       [8.4, 13.2],
+  f2:       [13.2, 18.0],
+  f3:       [18.0, 22.8],
+  more:     [22.8, 25.4],
+  stats:    [25.4, 27.8],
+  end:      [27.8, 30.01],
 };
+const at = (scene, dt) => S[scene][0] + dt;
 const FADE = 0.22;
+
+// sound effect cues [time, sound, gain, pitch]; build.sh reads them via window.SFX_CUES
+const SFX_CUES = [[0.15, 'pop', 0.9, 0.8]];
+const cue = (t, name, gain = 1, pitch = 1) => SFX_CUES.push([+t.toFixed(3), name, gain, pitch]);
+
+const BUBBLES = [['#b1', 0.2], ['#b2', 1.05], ['#b3', 1.9]];
+BUBBLES.forEach(([, dt], i) => cue(at('problem', dt), 'pop', 0.9, 1 + i * 0.12));
+cue(at('problem', 0.15), 'boing', 0.6);
+cue(at('solution', 0.05), 'chime', 0.8);
+cue(at('solution', 0.5), 'boing', 0.6, 1.15);
+for (const f of ['f1', 'f2', 'f3']) {
+  cue(at(f, 0.0), 'whoosh', 0.7);
+  cue(at(f, 0.35), 'pop', 0.8, 1.2);
+}
+const CAMEOS = [['#tp-cheer', 'solution', 0.5, 1], ['#tp-morning', 'f1', 0.55, -1], ['#tp-magnifier', 'f2', 0.55, 1],
+                ['#tp-book', 'f3', 0.55, -1], ['#tp-dance', 'more', 1.35, 1], ['#tp-megaphone', 'stats', 0.6, -1]];
+CAMEOS.slice(1).forEach(([, sc, dt]) => cue(at(sc, dt), 'boing', 0.45, 1.1));
+cue(at('more', 0.05), 'pop', 0.8);
+for (let i = 0; i < 5; i++) cue(at('more', 0.3 + i * 0.2), 'pop', 0.75, 1 + i * 0.1);
+const STAT_DT = i => 0.05 + i * 0.4, COUNT_DUR = 0.8;
+for (let i = 0; i < 3; i++) {
+  for (let k = 0; k < 8; k++) cue(at('stats', STAT_DT(i) + k * 0.08), 'tick', 0.35, 1 + i * 0.1);
+  cue(at('stats', STAT_DT(i) + COUNT_DUR - 0.1), 'ding', 0.7, 1 + i * 0.12);
+}
+cue(at('end', 0.05), 'chime', 0.9);
+cue(at('end', 0.6), 'pop', 0.8, 0.9);
+cue(at('end', 0.7), 'boing', 0.6);
+window.SFX_CUES = SFX_CUES;
 
 function sceneOpacity(t, [a, b]) {
   if (t < a || t >= b) return 0;
@@ -231,74 +260,71 @@ function slideUp(el, t, t0, { dur = 0.5, dy = 300 } = {}) {
   el.style.transform = `translateY(${(1 - p) * dy}px)`;
 }
 
+const FEAT = [S.f1[0], S.f3[1]];
 function veilOpacity(t) {
-  if (t < 3.0) return 0;
+  if (t < S.problem[0]) return 0;
   const base = 0.80, feat = 0.70, end = 0.96;
-  let v = base * easeOut(prog(t, 3.0, 0.35));
+  let v = base * easeOut(prog(t, S.problem[0], 0.35));
   // plain white behind 「ぜんぶ、とんペディアで。」
-  if (t >= 6.8 && t < 9.0) v = base + (1 - base) * easeOut(prog(t, 6.8, 0.3));
+  if (t >= S.solution[0] - 0.2 && t < FEAT[0]) v = base + (1 - base) * easeOut(prog(t, S.solution[0] - 0.2, 0.3));
   // lighter veil behind the phone while the app footage is the subject
-  if (t >= 9.0 && t < 22.0) {
-    const inP = easeOut(prog(t, 9.0, 0.4)), outP = easeOut(prog(t, 21.6, 0.4));
+  if (t >= FEAT[0] && t < FEAT[1]) {
+    const inP = easeOut(prog(t, FEAT[0], 0.4)), outP = easeOut(prog(t, FEAT[1] - 0.4, 0.4));
     v = 1 + (feat - 1) * inP + (base - feat) * outP;
   }
-  if (t >= 27.6) v = base + (end - base) * easeOut(prog(t, 27.6, 0.4));
+  if (t >= S.end[0]) v = base + (end - base) * easeOut(prog(t, S.end[0], 0.4));
   return v;
 }
 
 function setTime(t) {
   $('#veil').style.opacity = veilOpacity(t);
-  $('#veil').classList.toggle('hole', t >= 9.0 && t < 22.0);
-  const hdr = t >= 3.0 && t < 27.6 ? Math.min(prog(t, 3.0, 0.3), 1 - prog(t, 27.4, 0.2)) : 0;
+  $('#veil').classList.toggle('hole', t >= FEAT[0] && t < FEAT[1]);
+  const hdr = t >= S.problem[0] && t < S.end[0] ? Math.min(prog(t, S.problem[0], 0.3), 1 - prog(t, S.end[0] - 0.2, 0.2)) : 0;
   $('#header').style.opacity = hdr;
 
-  for (const [sel, win] of Object.entries(SCENES)) $(sel).style.opacity = sceneOpacity(t, win);
+  for (const [name, win] of Object.entries(S)) $(`#sc-${name}`).style.opacity = sceneOpacity(t, win);
 
   // problems
-  pop($('#b1'), t, 3.25, { dy: 40 });
-  pop($('#b2'), t, 4.25, { dy: 40 });
-  pop($('#b3'), t, 5.25, { dy: 40 });
-  slideUp($('#trouble'), t, 3.1, { dy: 500 });
+  BUBBLES.forEach(([sel, dt]) => pop($(sel), t, at('problem', dt), { dy: 40 }));
+  slideUp($('#trouble'), t, at('problem', 0.1), { dy: 500 });
   $('#trouble').style.transform += ` rotate(${Math.sin(t * 6) * 2}deg)`;
 
   // solution
-  pop($('#sol-icon'), t, 7.05, { from: 0.2, dur: 0.55 });
-  slideUp($('#sol-text'), t, 7.35, { dy: 120, dur: 0.45 });
+  pop($('#sol-icon'), t, at('solution', 0.05), { from: 0.2, dur: 0.55 });
+  slideUp($('#sol-text'), t, at('solution', 0.3), { dy: 120, dur: 0.45 });
 
   // features (the phone recording itself fades with the scene in ffmpeg)
-  for (const [sel, t0] of [['#sc-f1', 9.0], ['#sc-f2', 13.5], ['#sc-f3', 18.0]]) {
-    slideUp($(`${sel} .feat-card`), t, t0 + 0.1, { dy: 200, dur: 0.5 });
-    pop($(`${sel} .feat-num`), t, t0 + 0.35, { from: 0.2, dur: 0.45 });
+  for (const f of ['f1', 'f2', 'f3']) {
+    slideUp($(`#sc-${f} .feat-card`), t, at(f, 0.1), { dy: 200, dur: 0.5 });
+    pop($(`#sc-${f} .feat-num`), t, at(f, 0.35), { from: 0.2, dur: 0.45 });
   }
 
   // Tonpei cameos: pop in, then bob gently
-  for (const [sel, t0, side] of [['#tp-cheer', 7.5, 1], ['#tp-morning', 9.5, -1], ['#tp-magnifier', 14.0, 1],
-                                  ['#tp-book', 18.5, -1], ['#tp-dance', 23.2, 1], ['#tp-megaphone', 25.3, -1]]) {
-    const el = $(sel);
+  for (const [sel, sc, dt, side] of CAMEOS) {
+    const el = $(sel), t0 = at(sc, dt);
     pop(el, t, t0, { from: 0.2, dy: 60, dur: 0.5 });
     el.style.transform += ` rotate(${side * Math.sin((t - t0) * 5) * 4}deg)`;
   }
 
   // more features
-  pop($('#more-title'), t, 22.05, { from: 0.6 });
-  $$('#sc-more .chip').forEach((el, i) => pop(el, t, 22.35 + i * 0.22, { extra: 'translateX(-50%)', from: 0.3, dy: 30 }));
+  pop($('#more-title'), t, at('more', 0.05), { from: 0.6 });
+  $$('#sc-more .chip').forEach((el, i) => pop(el, t, at('more', 0.3 + i * 0.2), { extra: 'translateX(-50%)', from: 0.3, dy: 30 }));
 
   // stats with count-up
   $$('#sc-stats .stat').forEach((el, i) => {
-    const t0 = 24.85 + i * 0.45;
+    const t0 = at('stats', STAT_DT(i));
     slideUp(el, t, t0, { dy: 80, dur: 0.4 });
     const span = el.querySelector('[data-count]');
-    const target = +span.dataset.count;
-    const v = Math.round(target * easeOut(prog(t, t0, 0.9)));
+    const v = Math.round(+span.dataset.count * easeOut(prog(t, t0, COUNT_DUR)));
     span.textContent = v.toLocaleString('en-US');
   });
 
   // end
-  pop($('#end-icon'), t, 27.65, { from: 0.3 });
-  slideUp($('#end-sub'), t, 27.8, { dy: 60, dur: 0.4 });
-  pop($('#end-wm'), t, 27.9, { from: 0.7 });
-  pop($('#end-cta'), t, 28.2, { extra: 'translateX(-50%)', from: 0.5 });
-  slideUp($('#point'), t, 28.3, { dy: 600, dur: 0.6 });
+  pop($('#end-icon'), t, at('end', 0.05), { from: 0.3 });
+  slideUp($('#end-sub'), t, at('end', 0.2), { dy: 60, dur: 0.4 });
+  pop($('#end-wm'), t, at('end', 0.3), { from: 0.7 });
+  pop($('#end-cta'), t, at('end', 0.6), { extra: 'translateX(-50%)', from: 0.5 });
+  slideUp($('#point'), t, at('end', 0.7), { dy: 600, dur: 0.6 });
   $('#point').style.transform += ` rotate(${Math.sin(t * 5) * 3}deg)`;
 }
 window.setTime = setTime;

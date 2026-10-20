@@ -22,6 +22,7 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
 await page.goto(`file://${pagePath}`, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
+fs.writeFileSync(path.join(outDir, 'sfx_cues.json'), JSON.stringify(await page.evaluate(() => window.SFX_CUES)));
 
 const times = at ? at.split(',').map(Number) : Array.from({ length: Math.round(fps * duration) }, (_, i) => i / fps);
 for (const [i, t] of times.entries()) {
