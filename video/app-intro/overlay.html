@@ -218,7 +218,6 @@ const SFX_CUES = [];
 const cue = (t, name, gain = 1, pitch = 1) => SFX_CUES.push([+t.toFixed(3), name, gain, pitch]);
 
 cue(0.2, 'voice', 2.2);                    // everyone shouting 「とんペディア！」 as the logo pops
-cue(0.35, 'pop', 0.5);
 const BUBBLES = [['#b1', 0.2], ['#b2', 1.05], ['#b3', 1.9]];
 BUBBLES.forEach(([, dt], i) => cue(at('problem', dt), 'pop', 0.7, 1 + i * 0.08));
 cue(at('solution', 0.05), 'chime', 0.5);
