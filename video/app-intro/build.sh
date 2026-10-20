@@ -11,7 +11,7 @@ mkdir -p "$work"
 W=1080; H=1920; FPS=30
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
 # phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
-PX=250; PY=165; PW=580; PH=1186
+PX=250; PY=195; PW=580; PH=1186
 # part of the 1170x2532 recordings shown in the phone: everything below the status bar
 SCREEN_CROP="crop=1170:2392:0:140"
 

@@ -22,7 +22,7 @@
   .scene { inset: 0; opacity: 0; }
 
   /* header */
-  #header { top: 70px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 18px; }
+  #header { top: 45px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 18px; }
   #header img.icon { width: 76px; height: 76px; }
   #header img.wm { height: 62px; }
 
@@ -52,16 +52,16 @@
   #sol-text .b small { font-size: 68px; color: var(--ink); margin-left: 4px; }
 
   /* features: ffmpeg puts the app recording (status bar and bottom nav cropped off) under this layer
-     at x250 y165 580x1186; the veil gets a matching hole and the bezel is a ring drawn on top */
+     at x250 y195 580x1186; the veil gets a matching hole and the bezel is a ring drawn on top */
   #veil.hole {
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M304 165H776A54 54 0 0 1 830 219V1297A54 54 0 0 1 776 1351H304A54 54 0 0 1 250 1297V219A54 54 0 0 1 304 165Z'/></svg>");
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M304 195H776A54 54 0 0 1 830 249V1327A54 54 0 0 1 776 1381H304A54 54 0 0 1 250 1327V249A54 54 0 0 1 304 195Z'/></svg>");
   }
   .bezel {
-    left: 234px; top: 149px; width: 612px; height: 1218px; border-radius: 70px;
+    left: 234px; top: 179px; width: 612px; height: 1218px; border-radius: 70px;
     border: 16px solid #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
   }
   .feat-card {
-    left: 60px; right: 60px; top: 1395px; background: #fff; border-radius: 52px;
+    left: 60px; right: 60px; top: 1425px; background: #fff; border-radius: 52px;
     padding: 46px 56px 52px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
     border: 6px solid var(--purple);
   }
@@ -103,9 +103,9 @@
   /* Tonpei cameos */
   .tonpei { position: absolute; }
   #tp-cheer { width: 400px; left: 340px; top: 1360px; }
-  #tp-morning { width: 210px; left: 14px; top: 1150px; }
-  #tp-magnifier { width: 210px; left: 856px; top: 1150px; }
-  #tp-book { width: 216px; left: 10px; top: 1160px; }
+  #tp-morning { width: 210px; left: 14px; top: 1180px; }
+  #tp-magnifier { width: 210px; left: 856px; top: 1180px; }
+  #tp-book { width: 216px; left: 10px; top: 1190px; }
   #tp-dance { width: 300px; left: 750px; top: 1580px; }
   #tp-megaphone { width: 300px; left: 30px; top: 1640px; }
 </style>
