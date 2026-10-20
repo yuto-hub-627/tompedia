@@ -47,8 +47,9 @@
   /* solution */
   #sol-icon { width: 380px; height: 380px; left: 350px; top: 520px; border-radius: 90px; box-shadow: 0 30px 60px rgba(91,61,128,.35); }
   #sol-text { top: 1010px; font-weight: 900; line-height: 1.25; }
-  #sol-text .s { font-size: 86px; display: block; }
-  #sol-text .b { font-size: 148px; color: var(--purple); display: block; }
+  #sol-text .s { font-size: 64px; display: block; }
+  #sol-text .b { font-size: 136px; color: var(--purple); display: block; white-space: nowrap; }
+  #sol-text .b small { font-size: 68px; color: var(--ink); margin-left: 4px; }
 
   /* features: the app recording is composited by ffmpeg into the phone screen (x290 y190 500x1082) */
   .bezel {
@@ -89,12 +90,20 @@
   #end-icon { width: 250px; height: 250px; left: 415px; top: 470px; border-radius: 60px; box-shadow: 0 20px 40px rgba(91,61,128,.3); }
   #end-sub { top: 790px; font-size: 64px; font-weight: 800; color: var(--purple-dark); }
   #end-wm { width: 900px; left: 90px; top: 900px; }
-  #end-url {
-    top: 1150px; left: 50%; background: var(--purple); color: #fff; font-size: 64px; font-weight: 800;
-    padding: 26px 70px; border-radius: 80px; white-space: nowrap; letter-spacing: 1px;
+  #end-cta {
+    top: 1160px; left: 50%; background: var(--purple); color: #fff; font-size: 60px; font-weight: 800;
+    padding: 26px 70px; border-radius: 80px; white-space: nowrap;
   }
-  #end-cta { top: 1290px; font-size: 46px; font-weight: 800; color: var(--purple-dark); }
   #point { width: 560px; left: 470px; top: 1360px; }
+
+  /* Tonpei cameos */
+  .tonpei { position: absolute; }
+  #tp-cheer { width: 400px; left: 340px; top: 1360px; }
+  #tp-morning { width: 250px; left: 14px; top: 1010px; }
+  #tp-magnifier { width: 250px; left: 818px; top: 1010px; }
+  #tp-book { width: 260px; left: 8px; top: 1040px; }
+  #tp-dance { width: 300px; left: 750px; top: 1580px; }
+  #tp-megaphone { width: 300px; left: 30px; top: 1640px; }
 </style>
 </head>
 <body>
@@ -116,12 +125,14 @@
 <!-- 7.0–9.0 解決 -->
 <div id="sc-solution" class="scene abs">
   <img id="sol-icon" class="abs" src="ASSETS/icon.png" alt="">
-  <div id="sol-text" class="abs center"><span class="s">ぜんぶ、</span><span class="b">とんペディア</span><span class="s">で。</span></div>
+  <img id="tp-cheer" class="tonpei" src="ASSETS/tonpei_cheer.png" alt="">
+  <div id="sol-text" class="abs center"><span class="s">ぜんぶ、</span><span class="b">とんペディア<small>で。</small></span></div>
 </div>
 
 <!-- 9.0–22.0 機能 -->
 <div id="sc-f1" class="scene abs">
   <div class="bezel abs"></div>
+  <img id="tp-morning" class="tonpei" src="ASSETS/tonpei_morning.png" alt="">
   <div class="feat-card abs">
     <div class="feat-num">01</div>
     <div class="feat-title">時間割</div>
@@ -130,6 +141,7 @@
 </div>
 <div id="sc-f2" class="scene abs">
   <div class="bezel abs"></div>
+  <img id="tp-magnifier" class="tonpei" src="ASSETS/tonpei_magnifier.png" alt="">
   <div class="feat-card abs">
     <div class="feat-num">02</div>
     <div class="feat-title">鬼仏表</div>
@@ -139,6 +151,7 @@
 </div>
 <div id="sc-f3" class="scene abs">
   <div class="bezel abs"></div>
+  <img id="tp-book" class="tonpei" src="ASSETS/tonpei_book.png" alt="">
   <div class="feat-card abs">
     <div class="feat-num">03</div>
     <div class="feat-title">シラバス検索</div>
@@ -154,10 +167,12 @@
   <div class="chip abs" style="top:1020px">GPA計算機</div>
   <div class="chip abs" style="top:1210px">サークル紹介</div>
   <div class="chip abs" style="top:1400px">イベント掲示板</div>
+  <img id="tp-dance" class="tonpei" src="ASSETS/tonpei_dance.png" alt="">
 </div>
 
 <!-- 24.8–27.6 数字 -->
 <div id="sc-stats" class="scene abs">
+  <img id="tp-megaphone" class="tonpei" src="ASSETS/tonpei_megaphone.png" alt="">
   <div class="stat abs" style="top:330px"><div class="num"><span data-count="6720">0</span><span class="unit">人</span></div><div class="lbl">が利用中</div></div>
   <div class="stat abs" style="top:780px"><div class="lbl">今年度の新入生の</div><div class="num"><span data-count="95">0</span><span class="unit">%</span></div><div class="lbl">が登録</div></div>
   <div class="stat abs" style="top:1270px"><div class="lbl">毎日</div><div class="num"><span class="pre">約</span><span data-count="1800">0</span><span class="unit">人</span></div><div class="lbl">が使っています</div></div>
@@ -168,8 +183,7 @@
   <img id="end-icon" class="abs" src="ASSETS/icon.png" alt="">
   <div id="end-sub" class="abs center">東北大生のためのアプリ</div>
   <img id="end-wm" class="abs" src="ASSETS/wordmark.png" alt="">
-  <div id="end-url" class="abs">info.tompedia.jp</div>
-  <div id="end-cta" class="abs center">くわしくはホームページへ</div>
+  <div id="end-cta" class="abs">くわしくはホームページへ</div>
   <img id="point" class="abs" src="ASSETS/tonpei_point.png" alt="">
 </div>
 
@@ -250,6 +264,14 @@ function setTime(t) {
     pop($(`${sel} .feat-num`), t, t0 + 0.35, { from: 0.2, dur: 0.45 });
   }
 
+  // Tonpei cameos: pop in, then bob gently
+  for (const [sel, t0, side] of [['#tp-cheer', 7.5, 1], ['#tp-morning', 9.5, -1], ['#tp-magnifier', 14.0, 1],
+                                  ['#tp-book', 18.5, -1], ['#tp-dance', 23.2, 1], ['#tp-megaphone', 25.3, -1]]) {
+    const el = $(sel);
+    pop(el, t, t0, { from: 0.2, dy: 60, dur: 0.5 });
+    el.style.transform += ` rotate(${side * Math.sin((t - t0) * 5) * 4}deg)`;
+  }
+
   // more features
   pop($('#more-title'), t, 22.05, { from: 0.6 });
   $$('#sc-more .chip').forEach((el, i) => pop(el, t, 22.35 + i * 0.22, { extra: 'translateX(-50%)', from: 0.3, dy: 30 }));
@@ -268,8 +290,7 @@ function setTime(t) {
   pop($('#end-icon'), t, 27.65, { from: 0.3 });
   slideUp($('#end-sub'), t, 27.8, { dy: 60, dur: 0.4 });
   pop($('#end-wm'), t, 27.9, { from: 0.7 });
-  pop($('#end-url'), t, 28.2, { extra: 'translateX(-50%)', from: 0.5 });
-  slideUp($('#end-cta'), t, 28.4, { dy: 40, dur: 0.4 });
+  pop($('#end-cta'), t, 28.2, { extra: 'translateX(-50%)', from: 0.5 });
   slideUp($('#point'), t, 28.3, { dy: 600, dur: 0.6 });
   $('#point').style.transform += ` rotate(${Math.sin(t * 5) * 3}deg)`;
 }
