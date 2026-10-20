@@ -261,6 +261,8 @@ function slideUp(el, t, t0, { dur = 0.5, dy = 300 } = {}) {
 }
 
 const FEAT = [S.f1[0], S.f3[1]];
+const SWIPE = 0.4;   // = XF in build.sh: the phone track's slideleft (linear) between features
+
 function veilOpacity(t) {
   if (t < S.problem[0]) return 0;
   const base = 0.80, feat = 0.70, end = 0.96;
@@ -285,6 +287,24 @@ function setTime(t) {
   $('#header').style.opacity = hdr;
 
   for (const [name, win] of Object.entries(S)) $(`#sc-${name}`).style.opacity = sceneOpacity(t, win);
+  // between features the scene (card + Tonpei) swipes left with the phone screen instead of fading
+  const FEATS = ['f1', 'f2', 'f3'];
+  FEATS.forEach((f, i) => {
+    const el = $(`#sc-${f}`), [a, b] = S[f];
+    const swipeIn = i > 0 && t < a + SWIPE, swipeOut = i < FEATS.length - 1 && t >= b;
+    if (swipeIn) {
+      el.style.opacity = t >= a ? 1 : 0;
+      el.style.transform = `translateX(${(1 - prog(t, a, SWIPE)) * 1080}px)`;
+    } else if (swipeOut) {
+      el.style.opacity = t < b + SWIPE ? 1 : 0;
+      el.style.transform = `translateX(${-prog(t, b, SWIPE) * 1080}px)`;
+    } else {
+      el.style.transform = '';
+      // only the outer edges (into f1, out of f3) fade; sceneOpacity already handles outside [a, b)
+      if (t >= a && t < b) el.style.opacity = Math.min(i === 0 ? prog(t, a - FADE / 2, FADE) : 1,
+                                                       i === FEATS.length - 1 ? 1 - prog(t, b - FADE / 2, FADE) : 1);
+    }
+  });
 
   // problems
   BUBBLES.forEach(([sel, dt]) => pop($(sel), t, at('problem', dt), { dy: 40 }));
@@ -297,7 +317,7 @@ function setTime(t) {
 
   // features (the phone recording itself fades with the scene in ffmpeg)
   for (const f of ['f1', 'f2', 'f3']) {
-    slideUp($(`#sc-${f} .feat-card`), t, at(f, 0.1), { dy: 200, dur: 0.5 });
+    if (f === 'f1') slideUp($(`#sc-${f} .feat-card`), t, at(f, 0.1), { dy: 200, dur: 0.5 });
     pop($(`#sc-${f} .feat-num`), t, at(f, 0.35), { from: 0.2, dur: 0.45 });
   }
 

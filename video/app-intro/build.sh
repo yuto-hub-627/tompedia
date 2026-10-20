@@ -48,13 +48,13 @@ clip_xf() { # file start srcDur outDur extend vf out
   fi
 }
 # crossfade a list of clips back to back; each one starts at the running sum of the outDurs
-xfade_chain() { # out outDur... (inputs: "$work/xf_in$i.mp4")
-  local out="$1"; shift
+xfade_chain() { # out transition outDur... (inputs: "$work/xf_in$i.mp4")
+  local out="$1" tr="$2"; shift 2
   local inputs=() filter="" prev="0:v" t=0 i=0
   for d in "$@"; do inputs+=(-i "$work/xf_in$i.mp4"); i=$((i + 1)); done
   for ((k = 1; k < i; k++)); do
     t=$(python3 -c "print($t+${!k})")
-    filter+="[$prev][$k:v]xfade=transition=fade:duration=${XF}:offset=${t}[x$k];"; prev="x$k"
+    filter+="[$prev][$k:v]xfade=transition=${tr}:duration=${XF}:offset=${t}[x$k];"; prev="x$k"
   done
   ffmpeg -v error -y "${inputs[@]}" -filter_complex "${filter%;}" -map "[$prev]" \
     -c:v libx264 -crf 12 -preset fast -pix_fmt yuv420p "$out"
@@ -73,7 +73,7 @@ for i in "${!BG[@]}"; do
   clip_xf "$f" "$ss" "$sd" "$od" $ext "${cover}${blur}" "$work/xf_in$i.mp4"
   durs+=("$od")
 done
-xfade_chain "$work/bg.mp4" "${durs[@]}"
+xfade_chain "$work/bg.mp4" fade "${durs[@]}"
 
 echo "== phone clips"
 python3 -I - "$work/mask.png" $PW $PH <<'PY'
@@ -101,7 +101,8 @@ for n in "${!PHONE[@]}"; do
     -c:v libx264 -crf 12 -preset fast "$work/xf_in$n.mp4"
   durs+=("$od"); total=$(python3 -c "print($total+$od)")
 done
-xfade_chain "$work/phones.mp4" "${durs[@]}"
+# features swipe to the left like pages, in step with the description card in overlay.html
+xfade_chain "$work/phones.mp4" slideleft "${durs[@]}"
 fo=$(python3 -c "print($total-0.35)")
 ffmpeg -v error -y -i "$work/phones.mp4" -loop 1 -i "$work/mask.png" -filter_complex \
   "[0:v]format=rgba[c];[1:v]format=gray[m];[c][m]alphamerge=shortest=1,fade=t=in:st=0:d=0.35:alpha=1,fade=t=out:st=${fo}:d=0.35:alpha=1" \
