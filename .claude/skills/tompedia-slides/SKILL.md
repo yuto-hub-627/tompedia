@@ -61,18 +61,21 @@ PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わな�
 
 ## Step 3：Canvaで作る（Construction）
 
-### 3-1. ページをそろえる
-1. `create-design-from-brand-template`（`brand_template_id: EAG_b_rCz2M`）に、使う型のページ番号を**並べたい順に**渡して作る。
-   - 同じ型を複数枚使うとき（P6を5枚など）は、番号を繰り返して渡す。
-   - 繰り返しが受け付けられなかった場合は、ユニークなページで作ってから `copy-design` の `page_numbers` で並べ直した新デザインを作る（例：`[1,2,2,2,3]`）。それも不可なら `merge-designs`（`insert_pages`、同じデザインを source にする）で複製する。`merge-designs` は実行前に操作内容をユーザーに見せて承認をもらう。
-   - **初回はどの方法が通ったかを、このファイルのこの節に追記する。**
-2. テンプレート外の型は、`extra-layouts.md` の元デザイン（`DAHLVv4QdWU`／`DAHXIFJiZ5I`）から `merge-designs`（`insert_pages`）で該当ページを挿入する。
-3. タイトルを `YYYY-MM-DD_資料名` にする（`update_title`）。
+### 3-1. ページをそろえる（2026-10-20 の試作で確認した手順）
+1. `create-design-from-brand-template`（`brand_template_id: EAG_b_rCz2M`）を **`page_numbers` なしで** 呼ぶ。22ページのデザインが新しくできる（＝作業用の元。以下「元デザイン」）。
+   - `page_numbers` を付けると「not found」エラーになる。
+2. `merge-designs`（`type: create_new_design`、`title: YYYY-MM-DD_資料名`）で、元デザインから使う型を**並べたい順に**1回で入れる。
+   - `operations` は **1つだけ**（`insert_pages` 1回）。複数の操作を送るとエラーになる。
+   - `page_numbers` は**繰り返してよい**（例：`[2, 6, 21, 6, 6, 7]`）。
+   - `copy-design` は同じページ番号を繰り返すと「not found」エラーになるので使わない。
+3. テンプレート外の型は、できたデザインに `merge-designs`（`modify_existing_design`、`insert_pages`）で `extra-layouts.md` の元デザインから足す。
+4. 元デザイン（22ページ）は使い終わったら不要。MCPからは削除できないので、最後にユーザーに「ゴミ箱に入れてよい」と伝える。
 
 ### 3-2. 文章を差し替える
 1. `read-design` に `open_transaction: true` を付けて要素一覧（locator_id）を取る。出力が大きいので、ページを数枚ずつ（`page_indices`）読む。
 2. `edit-design`（`finalize: "keep_open"`）で、ページごとに `replace_text`。
-   - **`add_text` で新しい文字を作らない**（フォントが型と変わる）。文字の枠が足りなければ、同じ型のページを増やすか、同じページの既存テキストを流用する。
+   - 本文・見出しは `add_text` で作らない。`add_text` の文字は別の書体（`YACgEZ1cb1Q`、16px・黒）になる。文字の枠が足りなければ、同じ型のページを増やすか、同じページの既存テキストを流用する。
+   - **表だけは例外**：P7（空の本文カード）に `insert_shape` で見出し帯（`#825dab`、角丸12、高さ80）としま模様の行（`#f6efff`、高さ80、1行おき）を置き、列ごとに `add_text` を1つ置いて `format_text`（34px・bold・行間2.35＝1行80px）で行にそろえる。見出しの文字は白、日付など1列目は紫、本文は `#242323`。書体の違いは小さく、表としては問題なく見える（試作で確認）。
    - 使わないテキスト要素（目次の04・05など）は `delete_element`。
    - 図解が必要なら、ボックス・矢印は `insert_shape` で足してよい（色は `design-spec.md` のパレットだけ）。文字はボックスの中ではなく、既存テキストを `position_element` で重ねる。
    - 長い文章は枠の幅に合わせて `\n` で改行を入れる（1行の文字数は `design-spec.md`）。
