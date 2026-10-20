@@ -51,13 +51,17 @@
   #sol-text .b { font-size: 136px; color: var(--purple); display: block; white-space: nowrap; }
   #sol-text .b small { font-size: 68px; color: var(--ink); margin-left: 4px; }
 
-  /* features: the app recording is composited by ffmpeg into the phone screen (x290 y190 500x1082) */
+  /* features: ffmpeg puts the app recording (status bar and bottom nav cropped off) under this layer
+     at x210 y170 660x1162; the veil gets a matching hole and the bezel is a ring drawn on top */
+  #veil.hole {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M264 170H816A54 54 0 0 1 870 224V1278A54 54 0 0 1 816 1332H264A54 54 0 0 1 210 1278V224A54 54 0 0 1 264 170Z'/></svg>");
+  }
   .bezel {
-    left: 272px; top: 172px; width: 536px; height: 1118px; border-radius: 76px;
-    background: #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
+    left: 194px; top: 154px; width: 692px; height: 1194px; border-radius: 70px;
+    border: 16px solid #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
   }
   .feat-card {
-    left: 60px; right: 60px; top: 1335px; background: #fff; border-radius: 52px;
+    left: 60px; right: 60px; top: 1255px; background: #fff; border-radius: 52px;
     padding: 46px 56px 52px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
     border: 6px solid var(--purple);
   }
@@ -99,9 +103,9 @@
   /* Tonpei cameos */
   .tonpei { position: absolute; }
   #tp-cheer { width: 400px; left: 340px; top: 1360px; }
-  #tp-morning { width: 250px; left: 14px; top: 1010px; }
-  #tp-magnifier { width: 250px; left: 818px; top: 1010px; }
-  #tp-book { width: 260px; left: 8px; top: 1040px; }
+  #tp-morning { width: 250px; left: 4px; top: 1000px; }
+  #tp-magnifier { width: 250px; left: 826px; top: 1000px; }
+  #tp-book { width: 260px; left: 0px; top: 1020px; }
   #tp-dance { width: 300px; left: 750px; top: 1580px; }
   #tp-megaphone { width: 300px; left: 30px; top: 1640px; }
 </style>
@@ -231,10 +235,12 @@ function veilOpacity(t) {
   if (t < 3.0) return 0;
   const base = 0.80, feat = 0.70, end = 0.96;
   let v = base * easeOut(prog(t, 3.0, 0.35));
+  // plain white behind 「ぜんぶ、とんペディアで。」
+  if (t >= 6.8 && t < 9.0) v = base + (1 - base) * easeOut(prog(t, 6.8, 0.3));
   // lighter veil behind the phone while the app footage is the subject
   if (t >= 9.0 && t < 22.0) {
     const inP = easeOut(prog(t, 9.0, 0.4)), outP = easeOut(prog(t, 21.6, 0.4));
-    v = base + (feat - base) * inP + (base - feat) * outP;
+    v = 1 + (feat - 1) * inP + (base - feat) * outP;
   }
   if (t >= 27.6) v = base + (end - base) * easeOut(prog(t, 27.6, 0.4));
   return v;
@@ -242,6 +248,7 @@ function veilOpacity(t) {
 
 function setTime(t) {
   $('#veil').style.opacity = veilOpacity(t);
+  $('#veil').classList.toggle('hole', t >= 9.0 && t < 22.0);
   const hdr = t >= 3.0 && t < 27.6 ? Math.min(prog(t, 3.0, 0.3), 1 - prog(t, 27.4, 0.2)) : 0;
   $('#header').style.opacity = hdr;
 

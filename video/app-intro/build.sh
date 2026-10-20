@@ -9,8 +9,10 @@ assets="$(cd "$1" && pwd)"; footage="$(cd "$2" && pwd)"; work="$3"; out="$4"
 mkdir -p "$work"
 W=1080; H=1920; FPS=30
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
-# phone screen rect inside the overlay's bezel (see .bezel in overlay.html)
-PX=290; PY=190; PW=500; PH=1082
+# phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
+PX=210; PY=170; PW=660; PH=1162
+# part of the 1170x2532 recordings shown in the phone: no status bar, no bottom nav
+SCREEN_CROP="crop=1170:2060:0:140"
 
 # Edit list: "file start srcDur outDur" — srcDur is sped up/slowed to fit outDur.
 # Background behind the veil, 27s after the 3s logo opening.
@@ -53,31 +55,33 @@ import sys
 from PIL import Image, ImageDraw
 out, w, h = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
 m = Image.new('L', (w, h), 0)
-ImageDraw.Draw(m).rounded_rectangle((0, 0, w - 1, h - 1), radius=58, fill=255)
+ImageDraw.Draw(m).rounded_rectangle((0, 0, w - 1, h - 1), radius=54, fill=255)
 m.save(out)
 PY
-phone_inputs=(); phone_filters=""; prev="v0"; n=0
+# 1) phone clips with rounded corners and alpha fades (RGBA .mov)
+phone_inputs=(); chain=""; prev="0:v"; n=0
 for p in "${PHONE[@]}"; do
   read -r idx at <<< "$p"; read -r f ss sd od <<< "${BG[$idx]}"
-  clip "$f" "$ss" "$sd" "$od" "scale=${PW}:${PH},setsar=1" "$work/phone$n.mp4"
-  phone_inputs+=(-i "$work/phone$n.mp4")
+  clip "$f" "$ss" "$sd" "$od" "${SCREEN_CROP},scale=${PW}:${PH},setsar=1" "$work/phone$n.mp4"
   fo=$(python3 -c "print($od-0.22)")
-  # round the corners with the mask, fade with the scene, shift to its slot in the timeline
-  phone_filters+="[$((n + 4)):v]format=rgba[pc$n];[pc$n][m$n]alphamerge,"
-  phone_filters+="fade=t=in:st=0:d=0.22:alpha=1,fade=t=out:st=${fo}:d=0.22:alpha=1,setpts=PTS-STARTPTS+${at}/TB[p$n];"
-  phone_filters+="[$prev][p$n]overlay=${PX}:${PY}:eof_action=pass:format=auto[v$((n + 1))];"
+  ffmpeg -v error -y -i "$work/phone$n.mp4" -i "$work/mask.png" -filter_complex \
+    "[0:v]format=rgba[c];[1:v]format=gray[m];[c][m]alphamerge,fade=t=in:st=0:d=0.22:alpha=1,fade=t=out:st=${fo}:d=0.22:alpha=1" \
+    -c:v qtrle "$work/phone$n.mov"
+  phone_inputs+=(-itsoffset "$at" -i "$work/phone$n.mov")
+  chain+="[$prev][$((n + 1)):v]overlay=${PX}:${PY}:eof_action=pass:format=auto[v$((n + 1))];"
   prev="v$((n + 1))"; n=$((n + 1))
 done
 
 echo "== composite"
-masks=""; for i in $(seq 0 $((n - 1))); do masks+="[m$i]"; done
-filter="[0:v]${cover},fps=${FPS},trim=0:3,setpts=PTS-STARTPTS[a];[1:v]fps=${FPS},setpts=PTS-STARTPTS[b];[a][b]concat=n=2:v=1[base];"
-filter+="[base][2:v]overlay=0:0:format=auto[v0];"
-filter+="[3:v]format=gray,trim=0:5,split=${n}${masks};"
-filter+="${phone_filters}[${prev}]format=yuv420p[v]"
-ffmpeg -v error -y \
-  -i "$assets/pop.mp4" -i "$work/bg.mp4" -framerate $FPS -i "$work/frames/%05d.png" -loop 1 -framerate $FPS -i "$work/mask.png" \
-  "${phone_inputs[@]}" \
-  -filter_complex "$filter" -map "[v]" -t 30 -r $FPS \
+# 2) base: 3s logo opening + 27s background
+ffmpeg -v error -y -i "$assets/pop.mp4" -i "$work/bg.mp4" -filter_complex \
+  "[0:v]${cover},fps=${FPS},trim=0:3,setpts=PTS-STARTPTS[a];[1:v]fps=${FPS},setpts=PTS-STARTPTS[b];[a][b]concat=n=2:v=1,format=yuv420p" \
+  -c:v libx264 -crf 12 -preset fast "$work/base.mp4"
+# 3) phones under the text layer
+ffmpeg -v error -y -i "$work/base.mp4" "${phone_inputs[@]}" -filter_complex "${chain%;}" -map "[$prev]" \
+  -c:v libx264 -crf 12 -preset fast -pix_fmt yuv420p "$work/with_phones.mp4"
+# 4) text / Tonpei / veil layer on top
+ffmpeg -v error -y -i "$work/with_phones.mp4" -framerate $FPS -i "$work/frames/%05d.png" \
+  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]" -map "[v]" -t 30 -r $FPS \
   -c:v libx264 -profile:v high -crf 20 -preset slow -movflags +faststart "$out"
 ffprobe -v error -show_entries format=duration,size -of compact "$out"
