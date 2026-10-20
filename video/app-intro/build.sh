@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Builds the 30s vertical app intro video.
 # usage: ./build.sh <assetsDir> <footageDir> <workDir> <out.mp4>
-#   assetsDir:  icon.png wordmark.png tonpei_point.png tonpei_trouble.png pop.mp4
+#   assetsDir:  icon.png wordmark.png tonpei_*.png pop.mp4 voice.m4a (the 「とんペディア！」 shout)
+#   Sound effects are the CC0 samples in ./sfx (Kenney: Interface Sounds, Digital Audio, Casino Audio).
 #   footageDir: intro.mp4 (とんペディア紹介用) timetable.mp4 kibutsu.mp4 syllabus.mp4 (Figma用 recordings)
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -20,7 +21,7 @@ BG=(
   "intro 0 3.6 3.6"            # 3.0–6.6   あるある: home screen
   "intro 6 1.8 1.8"            # 6.6–8.4   解決: timetable
   "timetable 8.6 4.32 4.8"     # 8.4–13.2  時間割: starts at rest at the top, opens a class, closes it (0.9x)
-  "kibutsu 20.5 4.32 4.8"      # 13.2–18.0 鬼仏表: results -> detail (0.9x)
+  "kibutsu 18.4 4.8 4.8"       # 13.2–18.0 鬼仏表: results at rest at the top -> scroll -> detail (1x)
   "intro 13 4.8 4.8"           # 18.0–22.8 シラバス検索: a syllabus page opening and scrolling (1x)
   "intro 31 2.6 2.6"           # 22.8–25.4 その他
   "intro 38 2.4 2.4"           # 25.4–27.8 数字
@@ -121,8 +122,26 @@ ffmpeg -v error -y -i "$assets/pop.mp4" -i "$work/bg.mp4" -filter_complex \
 ffmpeg -v error -y -i "$work/base.mp4" -itsoffset "$PHONE_START" -i "$work/phones.mov" \
   -filter_complex "[0:v][1:v]overlay=${PX}:${PY}:eof_action=pass:format=auto,format=yuv420p" \
   -c:v libx264 -crf 12 -preset fast "$work/with_phones.mp4"
-# 4) sound effects, cued from the overlay's timeline
-python3 -I "$here/sfx.py" "$work/frames/sfx_cues.json" "$work/sfx.wav" 30
+# 4) audio: the opening shout, cleaned up, plus sound effects cued from the overlay's timeline
+# shout is at 2.85-3.9s of the recording: trim, cut rumble/boxiness, light denoise, add presence,
+# even out with a compressor, short fades
+ffmpeg -v error -y -ss 2.78 -t 1.35 -i "$assets/voice.m4a" -ac 1 -ar 48000 -af \
+  "highpass=f=90,afftdn=nf=-55,equalizer=f=250:t=q:w=1:g=-3,equalizer=f=3200:t=q:w=1:g=3,acompressor=threshold=-20dB:ratio=3:attack=5:release=120:makeup=3,afade=t=in:d=0.02,afade=t=out:st=1.15:d=0.2" \
+  "$work/voice.wav"
+sfx="$here/sfx"
+cat > "$work/samples.json" <<JSON
+{
+  "voice":   ["$work/voice.wav"],
+  "pop":     ["$sfx/drop_002.ogg", "$sfx/drop_003.ogg", "$sfx/drop_001.ogg", "$sfx/drop_004.ogg"],
+  "boing":   ["$sfx/phaseJump1.ogg", "$sfx/phaseJump2.ogg", "$sfx/phaseJump3.ogg"],
+  "whoosh":  ["$sfx/card-slide-1.ogg", "$sfx/card-slide-2.ogg", "$sfx/card-slide-3.ogg"],
+  "chime":   ["$sfx/confirmation_002.ogg", "$sfx/confirmation_004.ogg"],
+  "sparkle": ["$sfx/glass_004.ogg"],
+  "ding":    ["$sfx/glass_001.ogg", "$sfx/glass_003.ogg"],
+  "tick":    ["$sfx/tick_002.ogg", "$sfx/tick_004.ogg"]
+}
+JSON
+python3 -I "$here/sfx.py" "$work/frames/sfx_cues.json" "$work/samples.json" "$work/sfx.wav" 30
 # 5) text / Tonpei / veil layer on top, plus audio
 ffmpeg -v error -y -i "$work/with_phones.mp4" -framerate $FPS -i "$work/frames/%05d.png" -i "$work/sfx.wav" \
   -filter_complex "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]" -map "[v]" -map 2:a -t 30 -r $FPS \

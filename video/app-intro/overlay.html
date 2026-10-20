@@ -212,31 +212,36 @@ const S = {
 const at = (scene, dt) => S[scene][0] + dt;
 const FADE = 0.3;
 
-// sound effect cues [time, sound, gain, pitch]; build.sh reads them via window.SFX_CUES
-const SFX_CUES = [[0.15, 'pop', 0.9, 0.8]];
+// sound effect cues [time, sound, gain, pitch]; build.sh reads them via window.SFX_CUES.
+// Sounds are CC0 samples (see build.sh); gains are relative, since sfx.py evens out their loudness first.
+const SFX_CUES = [];
 const cue = (t, name, gain = 1, pitch = 1) => SFX_CUES.push([+t.toFixed(3), name, gain, pitch]);
 
+cue(0.2, 'voice', 2.2);                    // everyone shouting 「とんペディア！」 as the logo pops
+cue(0.35, 'pop', 0.5);
 const BUBBLES = [['#b1', 0.2], ['#b2', 1.05], ['#b3', 1.9]];
-BUBBLES.forEach(([, dt], i) => cue(at('problem', dt), 'pop', 0.9, 1 + i * 0.12));
+BUBBLES.forEach(([, dt], i) => cue(at('problem', dt), 'pop', 0.7, 1 + i * 0.08));
 cue(at('problem', 0.15), 'boing', 0.6);
-cue(at('solution', 0.05), 'chime', 0.8);
-cue(at('solution', 0.5), 'boing', 0.6, 1.15);
+cue(at('solution', 0.05), 'chime', 0.5);
+cue(at('solution', 0.08), 'sparkle', 0.3);
+cue(at('solution', 0.5), 'boing', 0.6, 1.1);
 for (const f of ['f1', 'f2', 'f3']) {
-  cue(at(f, 0.0), 'whoosh', 0.7);
-  cue(at(f, 0.35), 'pop', 0.8, 1.2);
+  cue(at(f, 0.0), 'whoosh', 0.4);
+  cue(at(f, 0.35), 'pop', 0.6, 1.1);
 }
 const CAMEOS = [['#tp-cheer', 'solution', 0.5, 1], ['#tp-morning', 'f1', 0.55, -1], ['#tp-magnifier', 'f2', 0.55, 1],
                 ['#tp-book', 'f3', 0.55, -1], ['#tp-dance', 'more', 1.35, 1], ['#tp-megaphone', 'stats', 0.6, -1]];
-CAMEOS.slice(1).forEach(([, sc, dt]) => cue(at(sc, dt), 'boing', 0.45, 1.1));
-cue(at('more', 0.05), 'pop', 0.8);
-for (let i = 0; i < 5; i++) cue(at('more', 0.3 + i * 0.2), 'pop', 0.75, 1 + i * 0.1);
+CAMEOS.slice(1).forEach(([, sc, dt]) => cue(at(sc, dt), 'boing', 0.5, 1.05));
+cue(at('more', 0.05), 'pop', 0.7);
+for (let i = 0; i < 5; i++) cue(at('more', 0.3 + i * 0.2), 'pop', 0.6, 1 + i * 0.06);
 const STAT_DT = i => 0.05 + i * 0.4, COUNT_DUR = 0.8;
 for (let i = 0; i < 3; i++) {
-  for (let k = 0; k < 8; k++) cue(at('stats', STAT_DT(i) + k * 0.08), 'tick', 0.35, 1 + i * 0.1);
-  cue(at('stats', STAT_DT(i) + COUNT_DUR - 0.1), 'ding', 0.7, 1 + i * 0.12);
+  for (let k = 0; k < 5; k++) cue(at('stats', STAT_DT(i) + k * 0.13), 'tick', 0.25);
+  cue(at('stats', STAT_DT(i) + COUNT_DUR - 0.1), 'ding', 0.55, 1 + i * 0.06);
 }
-cue(at('end', 0.05), 'chime', 0.9);
-cue(at('end', 0.6), 'pop', 0.8, 0.9);
+cue(at('end', 0.05), 'chime', 0.6);
+cue(at('end', 0.08), 'sparkle', 0.35);
+cue(at('end', 0.6), 'pop', 0.6, 0.95);
 cue(at('end', 0.7), 'boing', 0.6);
 window.SFX_CUES = SFX_CUES;
 
