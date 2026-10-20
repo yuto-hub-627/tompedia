@@ -50,25 +50,24 @@
   #sol-text .s { font-size: 86px; display: block; }
   #sol-text .b { font-size: 148px; color: var(--purple); display: block; }
 
-  /* features */
+  /* features: the app recording is composited by ffmpeg into the phone screen (x290 y190 500x1082) */
+  .bezel {
+    left: 272px; top: 172px; width: 536px; height: 1118px; border-radius: 76px;
+    background: #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
+  }
   .feat-card {
-    left: 60px; right: 60px; top: 1180px; background: #fff; border-radius: 56px;
-    padding: 64px 60px 70px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
+    left: 60px; right: 60px; top: 1335px; background: #fff; border-radius: 52px;
+    padding: 46px 56px 52px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
     border: 6px solid var(--purple);
   }
   .feat-num {
-    position: absolute; top: -78px; left: 50px; width: 150px; height: 150px; border-radius: 50%;
-    background: var(--yellow); color: var(--purple-dark); font-size: 72px; font-weight: 900;
+    position: absolute; top: -64px; left: 48px; width: 124px; height: 124px; border-radius: 50%;
+    background: var(--yellow); color: var(--purple-dark); font-size: 60px; font-weight: 900;
     display: flex; align-items: center; justify-content: center; border: 6px solid #fff;
   }
-  .feat-title { font-size: 128px; font-weight: 900; color: var(--purple); line-height: 1.1; margin-top: 30px; }
-  .feat-desc { font-size: 58px; font-weight: 800; margin-top: 26px; line-height: 1.4; }
-  .feat-note { font-size: 40px; font-weight: 500; color: #6d6177; margin-top: 18px; line-height: 1.5; }
-  .feat-tag {
-    top: 180px; left: 50%; transform: translateX(-50%);
-    background: var(--purple); color: #fff; font-size: 46px; font-weight: 800;
-    padding: 14px 40px; border-radius: 40px; white-space: nowrap;
-  }
+  .feat-title { font-size: 104px; font-weight: 900; color: var(--purple); line-height: 1.1; margin-top: 30px; }
+  .feat-desc { font-size: 52px; font-weight: 800; margin-top: 18px; line-height: 1.4; }
+  .feat-note { font-size: 36px; font-weight: 500; color: #6d6177; margin-top: 12px; line-height: 1.45; }
 
   /* more */
   #more-title { top: 300px; font-size: 92px; font-weight: 900; color: var(--purple); }
@@ -122,7 +121,7 @@
 
 <!-- 9.0–22.0 機能 -->
 <div id="sc-f1" class="scene abs">
-  <div class="feat-tag abs">東北大生のためのアプリ</div>
+  <div class="bezel abs"></div>
   <div class="feat-card abs">
     <div class="feat-num">01</div>
     <div class="feat-title">時間割</div>
@@ -130,7 +129,7 @@
   </div>
 </div>
 <div id="sc-f2" class="scene abs">
-  <div class="feat-tag abs">東北大生のためのアプリ</div>
+  <div class="bezel abs"></div>
   <div class="feat-card abs">
     <div class="feat-num">02</div>
     <div class="feat-title">鬼仏表</div>
@@ -139,7 +138,7 @@
   </div>
 </div>
 <div id="sc-f3" class="scene abs">
-  <div class="feat-tag abs">東北大生のためのアプリ</div>
+  <div class="bezel abs"></div>
   <div class="feat-card abs">
     <div class="feat-num">03</div>
     <div class="feat-title">シラバス検索</div>
@@ -216,9 +215,9 @@ function slideUp(el, t, t0, { dur = 0.5, dy = 300 } = {}) {
 
 function veilOpacity(t) {
   if (t < 3.0) return 0;
-  const base = 0.80, feat = 0.42, end = 0.96;
+  const base = 0.80, feat = 0.70, end = 0.96;
   let v = base * easeOut(prog(t, 3.0, 0.35));
-  // lighter veil while the app footage is the subject
+  // lighter veil behind the phone while the app footage is the subject
   if (t >= 9.0 && t < 22.0) {
     const inP = easeOut(prog(t, 9.0, 0.4)), outP = easeOut(prog(t, 21.6, 0.4));
     v = base + (feat - base) * inP + (base - feat) * outP;
@@ -245,11 +244,10 @@ function setTime(t) {
   pop($('#sol-icon'), t, 7.05, { from: 0.2, dur: 0.55 });
   slideUp($('#sol-text'), t, 7.35, { dy: 120, dur: 0.45 });
 
-  // features
+  // features (the phone recording itself fades with the scene in ffmpeg)
   for (const [sel, t0] of [['#sc-f1', 9.0], ['#sc-f2', 13.5], ['#sc-f3', 18.0]]) {
-    slideUp($(`${sel} .feat-card`), t, t0 + 0.1, { dy: 260, dur: 0.55 });
+    slideUp($(`${sel} .feat-card`), t, t0 + 0.1, { dy: 200, dur: 0.5 });
     pop($(`${sel} .feat-num`), t, t0 + 0.35, { from: 0.2, dur: 0.45 });
-    pop($(`${sel} .feat-tag`), t, t0 + 0.2, { extra: 'translateX(-50%)', from: 0.6 });
   }
 
   // more features
