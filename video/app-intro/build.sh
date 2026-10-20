@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the 30s vertical app intro video.
+# Builds the 30.5s vertical app intro video.
 # usage: ./build.sh <assetsDir> <footageDir> <workDir> <out.mp4>
 #   assetsDir:  icon.png wordmark.png tonpei_*.png pop.mp4 voice.m4a (the 「とんペディア！」 shout)
 #   Sound effects are the CC0 samples in ./sfx (Kenney: Interface Sounds, Digital Audio, Casino Audio).
@@ -9,6 +9,7 @@ here="$(cd "$(dirname "$0")" && pwd)"
 assets="$(cd "$1" && pwd)"; footage="$(cd "$2" && pwd)"; work="$3"; out="$4"
 mkdir -p "$work"
 W=1080; H=1920; FPS=30
+DURATION=30.5   # must match the end of S.end in overlay.html
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
 # phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
 PX=250; PY=195; PW=580; PH=1186
@@ -16,7 +17,7 @@ PX=250; PY=195; PW=580; PH=1186
 SCREEN_CROP="crop=1170:2392:0:140"
 
 # Edit list: "file start srcDur outDur" — srcDur is sped up/slowed to fit outDur.
-# Background behind the veil, 27s after the 3s logo opening.
+# Background behind the veil, 27.5s after the 3s logo opening.
 BG=(
   "intro 0 3.6 3.6"            # 3.0–6.6   あるある: home screen
   "intro 6 1.8 1.8"            # 6.6–8.4   解決: timetable
@@ -25,7 +26,7 @@ BG=(
   "intro 13 4.8 4.8"           # 18.0–22.8 シラバス検索: a syllabus page opening and scrolling (1x)
   "intro 31 2.6 2.6"           # 22.8–25.4 その他
   "intro 38 2.4 2.4"           # 25.4–27.8 数字
-  "intro 42 2.2 2.2"           # 27.8–30.0 締め
+  "intro 42 2.7 2.7"           # 27.8–30.5 締め
 )
 # Feature segments shown sharp inside the phone: "bgIndex navY"
 # The Figma用 recordings predate the current bottom nav, so the latest one (from intro.mp4) is pasted over
@@ -63,7 +64,7 @@ xfade_chain() { # out transition outDur... (inputs: "$work/xf_in$i.mp4")
 
 echo "== overlay frames"
 rm -rf "$work/frames"
-node "$here/render-overlay.mjs" "$assets" "$work/frames" --fps $FPS --duration 30
+node "$here/render-overlay.mjs" "$assets" "$work/frames" --fps $FPS --duration $DURATION
 
 echo "== background"
 durs=()
@@ -114,7 +115,7 @@ ffmpeg -v error -y -i "$work/phones.mp4" -loop 1 -i "$work/mask.png" -filter_com
   -t "$total" -c:v qtrle "$work/phones.mov"
 
 echo "== composite"
-# 2) base: 3s logo opening (last frame held for the crossfade) + 27s background
+# 2) base: 3s logo opening (last frame held for the crossfade) + 27.5s background
 ffmpeg -v error -y -i "$assets/pop.mp4" -i "$work/bg.mp4" -filter_complex \
   "[0:v]${cover},fps=${FPS},trim=0:3,setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration=${XF},format=yuv420p[a];[1:v]fps=${FPS},setpts=PTS-STARTPTS,format=yuv420p[b];[a][b]xfade=transition=fade:duration=${XF}:offset=3" \
   -c:v libx264 -crf 12 -preset fast -pix_fmt yuv420p "$work/base.mp4"
@@ -141,9 +142,9 @@ cat > "$work/samples.json" <<JSON
   "tick":    ["$sfx/tick_002.ogg", "$sfx/tick_004.ogg"]
 }
 JSON
-python3 -I "$here/sfx.py" "$work/frames/sfx_cues.json" "$work/samples.json" "$work/sfx.wav" 30
+python3 -I "$here/sfx.py" "$work/frames/sfx_cues.json" "$work/samples.json" "$work/sfx.wav" $DURATION
 # 5) text / Tonpei / veil layer on top, plus audio
 ffmpeg -v error -y -i "$work/with_phones.mp4" -framerate $FPS -i "$work/frames/%05d.png" -i "$work/sfx.wav" \
-  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]" -map "[v]" -map 2:a -t 30 -r $FPS \
+  -filter_complex "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]" -map "[v]" -map 2:a -t $DURATION -r $FPS \
   -c:v libx264 -profile:v high -crf 20 -preset slow -c:a aac -b:a 160k -movflags +faststart "$out"
 ffprobe -v error -show_entries format=duration,size -of compact "$out"
