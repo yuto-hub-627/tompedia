@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@800;900&display=block" rel="stylesheet">
 <style>
-  :root { --purple: #825dab; --purple-dark: #5b3d80; --yellow: #ffd23f; --ink: #2b2233; }
+  :root { --purple: #825dab; --purple-dark: #5b3d80; --yellow: #ffd23f; --ink: #2b2233; --gc-blue: #1e2b99; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; background: #fff; }
   body { font-family: "M PLUS Rounded 1c", sans-serif; color: var(--ink); position: relative; }
@@ -16,8 +16,8 @@
   #title .row { display: flex; align-items: flex-end; gap: 10px; }
   #title img { width: 720px; }
   #title .ha { font-size: 70px; font-weight: 900; line-height: 1; }
-  #title .gc { font-size: 72px; font-weight: 900; color: var(--purple-dark); white-space: nowrap; }
-  #title .gc b { color: var(--purple); }
+  #title .gc { font-size: 66px; font-weight: 900; color: var(--purple-dark); white-space: nowrap; }
+  #title .gc b { color: var(--gc-blue); }   /* the GC post's blue */
 
   #post {
     width: 760px; left: 160px; top: 540px; border-radius: 28px;
@@ -33,7 +33,7 @@
 <body>
 <div id="title" class="abs">
   <div class="row"><img src="ASSETS/labo_logo.png" alt="とんペディア_ラボ"><span class="ha">は</span></div>
-  <div class="gc"><b>Giving Campaign</b>に参加中</div>
+  <div class="gc"><b>Giving Campaign 2026</b>に参加中</div>
 </div>
 <img id="post" class="abs" src="ASSETS/gc_post.png" alt="">
 <div id="vote" class="abs"><span>投票お願いします！</span></div>
