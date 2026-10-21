@@ -9,7 +9,8 @@ here="$(cd "$(dirname "$0")" && pwd)"
 assets="$(cd "$1" && pwd)"; footage="$(cd "$2" && pwd)"; work="$3"; out="$4"
 mkdir -p "$work"
 W=1080; H=1920; FPS=30
-DURATION=30.5   # must match the end of S.end in overlay.html
+OPEN=1.5        # length of the logo opening; = OPEN in overlay.html
+DURATION=$(python3 -c "print($OPEN + 27.5)")   # = the end of S.end in overlay.html
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
 # phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
 PX=250; PY=195; PW=580; PH=1186
@@ -17,23 +18,23 @@ PX=250; PY=195; PW=580; PH=1186
 SCREEN_CROP="crop=1170:2392:0:140"
 
 # Edit list: "file start srcDur outDur" — srcDur is sped up/slowed to fit outDur.
-# Background behind the veil, 27.5s after the 3s logo opening.
+# Background behind the veil, 27.5s after the logo opening (times below assume OPEN=1.5).
 BG=(
-  "intro 0 3.6 3.6"            # 3.0–6.6   あるある: home screen
-  "intro 6 1.8 1.8"            # 6.6–8.4   解決: timetable
-  "timetable 8.6 4.32 4.8"     # 8.4–13.2  時間割: starts at rest at the top, opens a class, closes it (0.9x)
-  "kibutsu 18.4 4.8 4.8"       # 13.2–18.0 鬼仏表: results at rest at the top -> scroll -> detail (1x)
-  "intro 13 4.8 4.8"           # 18.0–22.8 シラバス検索: a syllabus page opening and scrolling (1x)
-  "intro 31 2.6 2.6"           # 22.8–25.4 その他
-  "intro 38 2.4 2.4"           # 25.4–27.8 数字
-  "intro 42 2.7 2.7"           # 27.8–30.5 締め
+  "intro 0 3.6 3.6"            # 1.5–5.1   あるある: home screen
+  "intro 6 1.8 1.8"            # 5.1–6.9   解決: timetable
+  "timetable 8.6 4.32 4.8"     # 6.9–11.7  時間割: starts at rest at the top, opens a class, closes it (0.9x)
+  "kibutsu 18.4 4.8 4.8"       # 11.7–16.5 鬼仏表: results at rest at the top -> scroll -> detail (1x)
+  "intro 13 4.8 4.8"           # 16.5–21.3 シラバス検索: a syllabus page opening and scrolling (1x)
+  "intro 31 2.6 2.6"           # 21.3–23.9 その他
+  "intro 38 2.4 2.4"           # 23.9–26.3 数字
+  "intro 42 2.7 2.7"           # 26.3–29.0 締め
 )
 # Feature segments shown sharp inside the phone: "bgIndex navY"
 # The Figma用 recordings predate the current bottom nav, so the latest one (from intro.mp4) is pasted over
 # it at navY. The 鬼仏表 recording's old nav sits where the new one goes (2236); the 時間割 recording's starts
 # 42px higher, so paste it there (only white is left below it). "-" = already has the latest nav.
 PHONE=("2 2194" "3 2236" "4 -")
-PHONE_START=8.4   # the phone track runs continuously over the three feature scenes
+PHONE_START=$(python3 -c "print($OPEN + 5.4)")   # the phone track runs continuously over the three feature scenes
 XF=0.4            # crossfade length between consecutive clips (no hard cuts)
 
 clip() { # file start srcDur outDur vf out
@@ -115,9 +116,9 @@ ffmpeg -v error -y -i "$work/phones.mp4" -loop 1 -i "$work/mask.png" -filter_com
   -t "$total" -c:v qtrle "$work/phones.mov"
 
 echo "== composite"
-# 2) base: 3s logo opening (last frame held for the crossfade) + 27.5s background
+# 2) base: logo opening (last frame held for the crossfade) + 27.5s background
 ffmpeg -v error -y -i "$assets/pop.mp4" -i "$work/bg.mp4" -filter_complex \
-  "[0:v]${cover},fps=${FPS},trim=0:3,setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration=${XF},format=yuv420p[a];[1:v]fps=${FPS},setpts=PTS-STARTPTS,format=yuv420p[b];[a][b]xfade=transition=fade:duration=${XF}:offset=3" \
+  "[0:v]${cover},fps=${FPS},trim=0:${OPEN},setpts=PTS-STARTPTS,tpad=stop_mode=clone:stop_duration=${XF},format=yuv420p[a];[1:v]fps=${FPS},setpts=PTS-STARTPTS,format=yuv420p[b];[a][b]xfade=transition=fade:duration=${XF}:offset=${OPEN}" \
   -c:v libx264 -crf 12 -preset fast -pix_fmt yuv420p "$work/base.mp4"
 # 3) phone track under the text layer
 ffmpeg -v error -y -i "$work/base.mp4" -itsoffset "$PHONE_START" -i "$work/phones.mov" \

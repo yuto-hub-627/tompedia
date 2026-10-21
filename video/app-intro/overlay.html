@@ -118,7 +118,7 @@
   <img class="wm" src="ASSETS/wordmark.png" alt="">
 </div>
 
-<!-- 3.0–7.0 あるある -->
+<!-- あるある -->
 <div id="sc-problem" class="scene abs">
   <div id="b1" class="bubble l abs">時間割、どこにメモしてる？</div>
   <div id="b2" class="bubble r abs">この授業、楽単？鬼単？</div>
@@ -199,15 +199,16 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
 // scene windows [start, end] in seconds; everything below is relative to these
+const OPEN = 1.5;   // length of the logo opening (tonpedia_pop.mp4); = OPEN in build.sh
 const S = {
-  problem:  [3.0, 6.6],
-  solution: [6.6, 8.4],
-  f1:       [8.4, 13.2],
-  f2:       [13.2, 18.0],
-  f3:       [18.0, 22.8],
-  more:     [22.8, 25.4],
-  stats:    [25.4, 27.8],
-  end:      [27.8, 30.51],
+  problem:  [OPEN + 0.0, OPEN + 3.6],
+  solution: [OPEN + 3.6, OPEN + 5.4],
+  f1:       [OPEN + 5.4, OPEN + 10.2],
+  f2:       [OPEN + 10.2, OPEN + 15.0],
+  f3:       [OPEN + 15.0, OPEN + 19.8],
+  more:     [OPEN + 19.8, OPEN + 22.4],
+  stats:    [OPEN + 22.4, OPEN + 24.8],
+  end:      [OPEN + 24.8, OPEN + 27.51],
 };
 const at = (scene, dt) => S[scene][0] + dt;
 const FADE = 0.3;
