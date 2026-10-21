@@ -199,7 +199,8 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 
 // scene windows [start, end] in seconds; everything below is relative to these
-const OPEN = 1.5;   // length of the logo opening (tonpedia_pop.mp4); = OPEN in build.sh
+// length of the logo opening (tonpedia_pop.mp4); build.sh passes its OPEN as ?open=
+const OPEN = +(new URLSearchParams(location.search).get('open') ?? 1.5);
 const S = {
   problem:  [OPEN + 0.0, OPEN + 3.6],
   solution: [OPEN + 3.6, OPEN + 5.4],

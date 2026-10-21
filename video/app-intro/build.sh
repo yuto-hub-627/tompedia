@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the 30.5s vertical app intro video.
+# Builds the vertical app intro video (OPEN + 27.5s; 29.0s with the default 1.5s opening).
 # usage: ./build.sh <assetsDir> <footageDir> <workDir> <out.mp4>
 #   assetsDir:  icon.png wordmark.png tonpei_*.png pop.mp4 voice.m4a (the 「とんペディア！」 shout)
 #   Sound effects are the CC0 samples in ./sfx (Kenney: Interface Sounds, Digital Audio, Casino Audio).
@@ -9,7 +9,7 @@ here="$(cd "$(dirname "$0")" && pwd)"
 assets="$(cd "$1" && pwd)"; footage="$(cd "$2" && pwd)"; work="$3"; out="$4"
 mkdir -p "$work"
 W=1080; H=1920; FPS=30
-OPEN=1.5        # length of the logo opening; = OPEN in overlay.html
+OPEN=${OPEN:-1.5}   # length of the logo opening (env override, e.g. OPEN=2 ./build.sh ...); passed to overlay.html
 DURATION=$(python3 -c "print($OPEN + 27.5)")   # = the end of S.end in overlay.html
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
 # phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
@@ -65,7 +65,7 @@ xfade_chain() { # out transition outDur... (inputs: "$work/xf_in$i.mp4")
 
 echo "== overlay frames"
 rm -rf "$work/frames"
-node "$here/render-overlay.mjs" "$assets" "$work/frames" --fps $FPS --duration $DURATION
+node "$here/render-overlay.mjs" "$assets" "$work/frames" --fps $FPS --duration $DURATION --query open=$OPEN
 
 echo "== background"
 durs=()

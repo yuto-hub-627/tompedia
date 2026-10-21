@@ -37,7 +37,9 @@
 | 16.5–21.3 | とんペディア紹介用.MP4 | 13–17.8秒（基礎ドイツ語のシラバスを開いてスクロール） | 等倍 |
 | 21.3–29.0 | とんペディア紹介用.MP4 | 31–33.6／38–40.4／42–44.7秒（イベント画面） | 等倍 |
 
-区間の調整は `video/app-intro/build.sh` の `BG=( ... )` を書き換えて再実行する。最初のロゴ画面の長さは `build.sh` と `overlay.html` の `OPEN` で変えられる（後ろの場面は自動でずれる）。
+区間の調整は `video/app-intro/build.sh` の `BG=( ... )` を書き換えて再実行する。最初のロゴ画面の長さは `OPEN=2.0 ./build.sh ...` のように環境変数 `OPEN` で変えられる（初期値1.5秒。`overlay.html` にも自動で渡され、後ろの場面は自動でずれる）。
+
+比較用に、ロゴ画面1.8秒・2.0秒のGC版（BGM入り）も作成：`tompedia_app_intro_v17_open18_gc_bgm.mp4`（32.4秒）、`tompedia_app_intro_v17_open20_gc_bgm.mp4`（32.6秒）。
 
 ## GC（Giving Campaign）版
 

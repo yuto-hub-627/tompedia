@@ -1,6 +1,6 @@
 // Renders a page (overlay.html by default) frame by frame into PNGs, transparent unless --opaque.
 // usage: node render-overlay.mjs <assetsDir> <outDir> [--page gc-card.html] [--opaque]
-//                                [--fps 30] [--duration 30] [--at 3.5,10,...]
+//                                [--fps 30] [--duration 30] [--at 3.5,10,...] [--query open=1.5]
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,6 +14,7 @@ const duration = +opt('duration', 30);
 const at = opt('at', null);
 const pageFile = opt('page', 'overlay.html');
 const opaque = rest.includes('--opaque');
+const query = opt('query', '');
 
 fs.mkdirSync(outDir, { recursive: true });
 const html = fs.readFileSync(path.join(here, pageFile), 'utf8')
@@ -23,7 +24,7 @@ fs.writeFileSync(pagePath, html);
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
-await page.goto(`file://${pagePath}`, { waitUntil: 'networkidle' });
+await page.goto(`file://${pagePath}${query ? `?${query}` : ''}`, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
 fs.writeFileSync(path.join(outDir, 'sfx_cues.json'), JSON.stringify(await page.evaluate(() => window.SFX_CUES)));
 
