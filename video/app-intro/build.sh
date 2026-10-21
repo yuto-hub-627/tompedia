@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the vertical app intro video (OPEN + 27.5s; 29.0s with the default 1.5s opening).
+# Builds the vertical app intro video (OPEN + 27.5s; 29.3s with the default 1.8s opening).
 # usage: ./build.sh <assetsDir> <footageDir> <workDir> <out.mp4>
 #   assetsDir:  icon.png wordmark.png tonpei_*.png pop.mp4 voice.m4a (the 「とんペディア！」 shout)
 #   Sound effects are the CC0 samples in ./sfx (Kenney: Interface Sounds, Digital Audio, Casino Audio).
@@ -9,7 +9,7 @@ here="$(cd "$(dirname "$0")" && pwd)"
 assets="$(cd "$1" && pwd)"; footage="$(cd "$2" && pwd)"; work="$3"; out="$4"
 mkdir -p "$work"
 W=1080; H=1920; FPS=30
-OPEN=${OPEN:-1.5}   # length of the logo opening (env override, e.g. OPEN=2 ./build.sh ...); passed to overlay.html
+OPEN=${OPEN:-1.8}   # length of the logo opening (env override, e.g. OPEN=2 ./build.sh ...); passed to overlay.html
 DURATION=$(python3 -c "print($OPEN + 27.5)")   # = the end of S.end in overlay.html
 cover="scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1"
 # phone screen rect inside the overlay's bezel (see .bezel / #veil.hole in overlay.html)
@@ -18,16 +18,16 @@ PX=250; PY=195; PW=580; PH=1186
 SCREEN_CROP="crop=1170:2392:0:140"
 
 # Edit list: "file start srcDur outDur" — srcDur is sped up/slowed to fit outDur.
-# Background behind the veil, 27.5s after the logo opening (times below assume OPEN=1.5).
+# Background behind the veil, 27.5s after the logo opening (times below assume OPEN=1.8).
 BG=(
-  "intro 0 3.6 3.6"            # 1.5–5.1   あるある: home screen
-  "intro 6 1.8 1.8"            # 5.1–6.9   解決: timetable
-  "timetable 8.6 4.32 4.8"     # 6.9–11.7  時間割: starts at rest at the top, opens a class, closes it (0.9x)
-  "kibutsu 18.4 4.8 4.8"       # 11.7–16.5 鬼仏表: results at rest at the top -> scroll -> detail (1x)
-  "intro 13 4.8 4.8"           # 16.5–21.3 シラバス検索: a syllabus page opening and scrolling (1x)
-  "intro 31 2.6 2.6"           # 21.3–23.9 その他
-  "intro 38 2.4 2.4"           # 23.9–26.3 数字
-  "intro 42 2.7 2.7"           # 26.3–29.0 締め
+  "intro 0 3.6 3.6"            # 1.8–5.4   あるある: home screen
+  "intro 6 1.8 1.8"            # 5.4–7.2   解決: timetable
+  "timetable 8.6 4.32 4.8"     # 7.2–12.0  時間割: starts at rest at the top, opens a class, closes it (0.9x)
+  "kibutsu 18.4 4.8 4.8"       # 12.0–16.8 鬼仏表: results at rest at the top -> scroll -> detail (1x)
+  "intro 13 4.8 4.8"           # 16.8–21.6 シラバス検索: a syllabus page opening and scrolling (1x)
+  "intro 31 2.6 2.6"           # 21.6–24.2 その他
+  "intro 38 2.4 2.4"           # 24.2–26.6 数字
+  "intro 42 2.7 2.7"           # 26.6–29.3 締め
 )
 # Feature segments shown sharp inside the phone: "bgIndex navY"
 # The Figma用 recordings predate the current bottom nav, so the latest one (from intro.mp4) is pasted over
