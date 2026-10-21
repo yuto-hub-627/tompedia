@@ -50,3 +50,14 @@
 | 30.2〜 | 上に「［とんペディア_ラボのロゴ］は／**Giving Campaign 2026**（Canva画像と同じ青 #1e2b99）に参加中」、真ん中に Canva の GC 投稿画像（DAHYForzA3E を PNG 書き出し）、下に「投票お願いします！」（黄色の下線）。順にふわっと出てくる。効果音は「キラーン」1回 |
 
 作り方：`video/app-intro/build-gc.sh <assetsDir> <通常版.mp4> <作業フォルダ> <出力.mp4>`。カードのデザインは `video/app-intro/gc-card.html`。
+
+## BGM（試し）
+
+`video/app-intro/add-bgm.sh <動画.mp4> <BGM> <出力.mp4> [BGMの開始秒] [BGMの音量]` で、できあがった動画（普通用・GC用どちらでも）にBGMを重ねる。映像はそのままコピーし、音だけ作り直す。
+
+- BGMは曲の頭から使い、最後の1.5秒でフェードアウト。冒頭の「とんペディア！」の間はBGMを40%まで下げて声を立たせる
+- 全体の音量はリールでよくある -16 LUFS 前後にそろえる（声がBGMより約10dB大きい）
+- 候補（すべて OpenTracks〈旧DOVA-SYNDROME〉、作曲：しゃろう。商用利用OK・クレジット不要、作曲者側の追加の禁止事項なし）
+  - 「SUMMER TRIANGLE」（Future Bass、元気で爽やか、少しエモい）https://opentracks.com/bgm/detail/12983
+  - 「しゅわしゅわハニーレモン350ml」（Kawaii Future Bass、明るくかわいい）https://opentracks.com/bgm/detail/14621
+  - 「Morning」（ポップ／カントリー、明るく爽やか。頭の8秒は静かで、ちょうど機能紹介の始まりでバンドが入る）https://opentracks.com/bgm/detail/2445
