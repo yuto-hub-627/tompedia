@@ -1,0 +1,9 @@
+{
+  "name": "tompedia-app-intro-video",
+  "private": true,
+  "type": "module",
+  "description": "Renders the Tompedia app intro video (overlay frames + ffmpeg composite)",
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}

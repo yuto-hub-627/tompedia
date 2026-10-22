@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Tompedia app intro overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800;900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --purple: #825dab;
+    --purple-dark: #5b3d80;
+    --lavender: #efe7f8;
+    --yellow: #ffd23f;
+    --ink: #2b2233;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; background: transparent; overflow: hidden; }
+  body { font-family: "M PLUS Rounded 1c", sans-serif; color: var(--ink); position: relative; }
+  .abs { position: absolute; }
+  .center { left: 0; right: 0; text-align: center; }
+  #veil { inset: 0; background: #fff; }
+  .scene { inset: 0; opacity: 0; }
+
+  /* header */
+  #header { top: 45px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 18px; }
+  #header img.icon { width: 76px; height: 76px; }
+  #header img.wm { height: 62px; }
+
+  /* problems */
+  .bubble {
+    background: #fff; border: 6px solid var(--purple); border-radius: 60px;
+    padding: 34px 48px; font-size: 62px; font-weight: 800; color: var(--purple-dark);
+    box-shadow: 0 14px 0 rgba(130,93,171,.25); white-space: nowrap;
+  }
+  .bubble::after {
+    content: ""; position: absolute; bottom: -34px; width: 0; height: 0;
+    border-left: 22px solid transparent; border-right: 22px solid transparent;
+    border-top: 34px solid var(--purple);
+  }
+  .bubble.l::after { left: 90px; }
+  .bubble.r::after { right: 90px; }
+  #b1 { top: 330px; left: 70px; }
+  #b2 { top: 610px; right: 60px; }
+  #b3 { top: 890px; left: 70px; }
+  #trouble { width: 640px; left: 220px; top: 1230px; }
+
+  /* solution */
+  #sol-icon { width: 380px; height: 380px; left: 350px; top: 520px; border-radius: 90px; box-shadow: 0 30px 60px rgba(91,61,128,.35); }
+  #sol-text { top: 1010px; font-weight: 900; line-height: 1.25; }
+  #sol-text .s { font-size: 64px; display: block; }
+  #sol-text .b { font-size: 136px; color: var(--purple); display: block; white-space: nowrap; }
+  #sol-text .b small { font-size: 68px; color: var(--ink); margin-left: 4px; }
+
+  /* features: ffmpeg puts the app recording (status bar and bottom nav cropped off) under this layer
+     at x250 y195 580x1186; the veil gets a matching hole and the bezel is a ring drawn on top */
+  #veil.hole {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M304 195H776A54 54 0 0 1 830 249V1327A54 54 0 0 1 776 1381H304A54 54 0 0 1 250 1327V249A54 54 0 0 1 304 195Z'/></svg>");
+  }
+  .bezel {
+    left: 234px; top: 179px; width: 612px; height: 1218px; border-radius: 70px;
+    border: 16px solid #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
+  }
+  .feat-card {
+    left: 60px; right: 60px; top: 1425px; background: #fff; border-radius: 52px;
+    padding: 46px 56px 52px; box-shadow: 0 24px 60px rgba(91,61,128,.28);
+    border: 6px solid var(--purple);
+  }
+  .feat-num {
+    position: absolute; top: 48px; left: 50px; width: 112px; height: 112px; border-radius: 50%;
+    background: var(--yellow); color: var(--purple-dark); font-size: 54px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feat-title { font-size: 104px; font-weight: 900; color: var(--purple); line-height: 1.1; margin-left: 132px; }
+  .feat-desc { font-size: 52px; font-weight: 800; margin-top: 18px; line-height: 1.4; }
+  .feat-note { font-size: 36px; font-weight: 500; color: #6d6177; margin-top: 12px; line-height: 1.45; }
+
+  /* more */
+  #more-title { top: 300px; font-size: 92px; font-weight: 900; color: var(--purple); }
+  #more-title em { font-style: normal; background: linear-gradient(transparent 62%, var(--yellow) 62%); padding: 0 8px; }
+  .chip {
+    left: 50%; background: #fff; color: var(--purple-dark); border: 6px solid var(--purple);
+    font-size: 66px; font-weight: 800; padding: 26px 64px; border-radius: 80px; white-space: nowrap;
+    box-shadow: 0 12px 0 rgba(130,93,171,.25);
+  }
+
+  /* numbers */
+  .stat { left: 0; right: 0; text-align: center; }
+  .stat .lbl { font-size: 58px; font-weight: 800; }
+  .stat .num { font-size: 190px; font-weight: 900; color: var(--purple); line-height: 1.05; letter-spacing: -2px; }
+  .stat .unit { font-size: 80px; font-weight: 900; color: var(--purple); margin-left: 6px; }
+  .stat .pre { font-size: 64px; font-weight: 900; color: var(--purple); margin-right: 10px; }
+
+  /* end */
+  #end-icon { width: 250px; height: 250px; left: 415px; top: 470px; border-radius: 60px; box-shadow: 0 20px 40px rgba(91,61,128,.3); }
+  #end-sub { top: 790px; font-size: 64px; font-weight: 800; color: var(--purple-dark); }
+  #end-wm { width: 900px; left: 90px; top: 900px; }
+  #end-cta {
+    top: 1160px; left: 50%; background: var(--purple); color: #fff; font-size: 60px; font-weight: 800;
+    padding: 26px 70px; border-radius: 80px; white-space: nowrap;
+  }
+  #point { width: 560px; left: 470px; top: 1360px; }
+
+  /* Tonpei cameos */
+  .tonpei { position: absolute; }
+  #tp-cheer { width: 400px; left: 340px; top: 1360px; }
+  #tp-morning { width: 210px; left: 14px; top: 1180px; }
+  #tp-magnifier { width: 210px; left: 856px; top: 1180px; }
+  #tp-book { width: 216px; left: 10px; top: 1190px; }
+  #tp-dance { width: 300px; left: 750px; top: 1580px; }
+  #tp-megaphone { width: 300px; left: 30px; top: 1640px; }
+</style>
+</head>
+<body>
+<div id="veil" class="abs"></div>
+
+<div id="header" class="abs">
+  <img class="icon" src="ASSETS/icon.png" alt="">
+  <img class="wm" src="ASSETS/wordmark.png" alt="">
+</div>
+
+<!-- あるある -->
+<div id="sc-problem" class="scene abs">
+  <div id="b1" class="bubble l abs">時間割、どこにメモしてる？</div>
+  <div id="b2" class="bubble r abs">この授業、楽単？鬼単？</div>
+  <div id="b3" class="bubble l abs">授業の中身、どこで調べる？</div>
+  <img id="trouble" class="abs" src="ASSETS/tonpei_trouble.png" alt="">
+</div>
+
+<!-- 7.0–9.0 解決 -->
+<div id="sc-solution" class="scene abs">
+  <img id="sol-icon" class="abs" src="ASSETS/icon.png" alt="">
+  <img id="tp-cheer" class="tonpei" src="ASSETS/tonpei_cheer.png" alt="">
+  <div id="sol-text" class="abs center"><span class="s">ぜんぶ、</span><span class="b">とんペディア<small>で。</small></span></div>
+</div>
+
+<!-- 機能: one bezel for all three feature scenes; the phone recordings crossfade inside it -->
+<div id="bezel" class="bezel abs"></div>
+<div id="sc-f1" class="scene abs">
+  <img id="tp-morning" class="tonpei" src="ASSETS/tonpei_morning.png" alt="">
+  <div class="feat-card abs">
+    <div class="feat-num">01</div>
+    <div class="feat-title">時間割</div>
+    <div class="feat-desc">授業を登録して、<br>自分だけの時間割に</div>
+  </div>
+</div>
+<div id="sc-f2" class="scene abs">
+  <img id="tp-magnifier" class="tonpei" src="ASSETS/tonpei_magnifier.png" alt="">
+  <div class="feat-card abs">
+    <div class="feat-num">02</div>
+    <div class="feat-title">鬼仏表</div>
+    <div class="feat-desc">先輩たちの授業評価がわかる</div>
+    <div class="feat-note">鬼＝きびしい／仏＝やさしい<br>授業の口コミ掲示板</div>
+  </div>
+</div>
+<div id="sc-f3" class="scene abs">
+  <img id="tp-book" class="tonpei" src="ASSETS/tonpei_book.png" alt="">
+  <div class="feat-card abs">
+    <div class="feat-num">03</div>
+    <div class="feat-title">シラバス検索</div>
+    <div class="feat-desc">授業の内容を、<br>サクッと検索</div>
+  </div>
+</div>
+
+<!-- 22.0–24.8 その他 -->
+<div id="sc-more" class="scene abs">
+  <div id="more-title" class="abs center"><em>こんな機能も</em><br>あります！</div>
+  <div class="chip abs" style="top:640px">空き教室検索</div>
+  <div class="chip abs" style="top:830px">地下鉄・バス時刻表</div>
+  <div class="chip abs" style="top:1020px">GPA計算機</div>
+  <div class="chip abs" style="top:1210px">サークル紹介</div>
+  <div class="chip abs" style="top:1400px">イベント掲示板</div>
+  <img id="tp-dance" class="tonpei" src="ASSETS/tonpei_dance.png" alt="">
+</div>
+
+<!-- 24.8–27.6 数字 -->
+<div id="sc-stats" class="scene abs">
+  <img id="tp-megaphone" class="tonpei" src="ASSETS/tonpei_megaphone.png" alt="">
+  <div class="stat abs" style="top:330px"><div class="num"><span data-count="6720">0</span><span class="unit">人</span></div><div class="lbl">が利用中</div></div>
+  <div class="stat abs" style="top:780px"><div class="lbl">今年度の新入生の</div><div class="num"><span data-count="95">0</span><span class="unit">%</span></div><div class="lbl">が登録</div></div>
+  <div class="stat abs" style="top:1270px"><div class="lbl">毎日</div><div class="num"><span class="pre">約</span><span data-count="1800">0</span><span class="unit">人</span></div><div class="lbl">が使っています</div></div>
+</div>
+
+<!-- 27.6–30.0 締め -->
+<div id="sc-end" class="scene abs">
+  <img id="end-icon" class="abs" src="ASSETS/icon.png" alt="">
+  <div id="end-sub" class="abs center">東北大生のためのアプリ</div>
+  <img id="end-wm" class="abs" src="ASSETS/wordmark.png" alt="">
+  <div id="end-cta" class="abs">くわしくはホームページへ</div>
+  <img id="point" class="abs" src="ASSETS/tonpei_point.png" alt="">
+</div>
+
+<script>
+// All motion is a pure function of time so every frame renders deterministically.
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, t0, dur) => clamp((t - t0) / dur);
+const easeOut = p => 1 - Math.pow(1 - p, 3);
+const easeOutBack = p => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+// scene windows [start, end] in seconds; everything below is relative to these
+// length of the logo opening (tonpedia_pop.mp4); build.sh passes its OPEN as ?open=
+const OPEN = +(new URLSearchParams(location.search).get('open') ?? 1.8);
+const S = {
+  problem:  [OPEN + 0.0, OPEN + 3.6],
+  solution: [OPEN + 3.6, OPEN + 5.4],
+  f1:       [OPEN + 5.4, OPEN + 10.2],
+  f2:       [OPEN + 10.2, OPEN + 15.0],
+  f3:       [OPEN + 15.0, OPEN + 19.8],
+  more:     [OPEN + 19.8, OPEN + 22.4],
+  stats:    [OPEN + 22.4, OPEN + 24.8],
+  end:      [OPEN + 24.8, OPEN + 27.51],
+};
+const at = (scene, dt) => S[scene][0] + dt;
+const FADE = 0.3;
+
+// sound effect cues [time, sound, gain, pitch]; build.sh reads them via window.SFX_CUES.
+// Sounds are CC0 samples (see build.sh); gains are relative, since sfx.py evens out their loudness first.
+const SFX_CUES = [];
+const cue = (t, name, gain = 1, pitch = 1) => SFX_CUES.push([+t.toFixed(3), name, gain, pitch]);
+
+cue(0.2, 'voice', 2.2);                    // everyone shouting 「とんペディア！」 as the logo pops
+const BUBBLES = [['#b1', 0.2], ['#b2', 1.05], ['#b3', 1.9]];
+BUBBLES.forEach(([, dt], i) => cue(at('problem', dt), 'pop', 0.7, 1 + i * 0.08));
+cue(at('solution', 0.05), 'chime', 0.5);
+cue(at('solution', 0.08), 'sparkle', 0.3);
+// features: just the swipe
+for (const f of ['f1', 'f2', 'f3']) cue(at(f, 0.0), 'whoosh', 0.4);
+const CAMEOS = [['#tp-cheer', 'solution', 0.5, 1], ['#tp-morning', 'f1', 0.55, -1], ['#tp-magnifier', 'f2', 0.55, 1],
+                ['#tp-book', 'f3', 0.55, -1], ['#tp-dance', 'more', 1.35, 1], ['#tp-megaphone', 'stats', 0.6, -1]];
+// more features: one pop for the title, the tags come in silently
+cue(at('more', 0.05), 'pop', 0.7);
+// stats: count up silently, one ding when the last number lands
+const STAT_DT = i => 0.05 + i * 0.4, COUNT_DUR = 0.8;
+cue(at('stats', STAT_DT(2) + COUNT_DUR - 0.1), 'ding', 0.55);
+cue(at('end', 0.05), 'chime', 0.6);
+cue(at('end', 0.08), 'sparkle', 0.35);
+window.SFX_CUES = SFX_CUES;
+
+// scenes fade over their boundaries, so neighbours crossfade instead of dipping to nothing
+function sceneOpacity(t, [a, b]) {
+  const h = FADE / 2;
+  if (t < a - h || t >= b + h) return 0;
+  return Math.min(prog(t, a - h, FADE), 1 - prog(t, b - h, FADE));
+}
+
+// pop-in: scale from `from` with overshoot, plus fade
+function pop(el, t, t0, { dur = 0.45, from = 0.4, dy = 0, extra = '' } = {}) {
+  const p = prog(t, t0, dur);
+  const s = from + (1 - from) * easeOutBack(p);
+  el.style.opacity = clamp(p * 3);
+  el.style.transform = `${extra} translateY(${(1 - easeOut(p)) * dy}px) scale(${s})`;
+}
+function slideUp(el, t, t0, { dur = 0.5, dy = 300 } = {}) {
+  const p = easeOut(prog(t, t0, dur));
+  el.style.opacity = clamp(p * 2);
+  el.style.transform = `translateY(${(1 - p) * dy}px)`;
+}
+
+const FEAT = [S.f1[0], S.f3[1]];
+const SWIPE = 0.4;   // = XF in build.sh: the phone track's slideleft (linear) between features
+
+function veilOpacity(t) {
+  if (t < S.problem[0]) return 0;
+  const base = 0.80, feat = 0.70, end = 0.96;
+  let v = base * easeOut(prog(t, S.problem[0], 0.35));
+  // plain white behind 「ぜんぶ、とんペディアで。」
+  if (t >= S.solution[0] - 0.2 && t < FEAT[0]) v = base + (1 - base) * easeOut(prog(t, S.solution[0] - 0.2, 0.3));
+  // lighter veil behind the phone while the app footage is the subject
+  if (t >= FEAT[0] && t < FEAT[1]) {
+    const inP = easeOut(prog(t, FEAT[0], 0.4)), outP = easeOut(prog(t, FEAT[1] - 0.4, 0.4));
+    v = 1 + (feat - 1) * inP + (base - feat) * outP;
+  }
+  if (t >= S.end[0]) v = base + (end - base) * easeOut(prog(t, S.end[0], 0.4));
+  return v;
+}
+
+function setTime(t) {
+  $('#veil').style.opacity = veilOpacity(t);
+  $('#veil').classList.toggle('hole', t >= FEAT[0] && t < FEAT[1]);
+  // the phone track appears at once (white on white) and fades out over 0.35s in build.sh
+  $('#bezel').style.opacity = t >= FEAT[0] && t < FEAT[1] ? Math.min(prog(t, FEAT[0], 0.35), 1 - prog(t, FEAT[1] - 0.35, 0.35)) : 0;
+  const hdr = t >= S.problem[0] && t < S.end[0] ? Math.min(prog(t, S.problem[0], 0.3), 1 - prog(t, S.end[0] - 0.2, 0.2)) : 0;
+  $('#header').style.opacity = hdr;
+
+  for (const [name, win] of Object.entries(S)) $(`#sc-${name}`).style.opacity = sceneOpacity(t, win);
+  // between features the scene (card + Tonpei) swipes left with the phone screen instead of fading
+  const FEATS = ['f1', 'f2', 'f3'];
+  FEATS.forEach((f, i) => {
+    const el = $(`#sc-${f}`), [a, b] = S[f];
+    const swipeIn = i > 0 && t < a + SWIPE, swipeOut = i < FEATS.length - 1 && t >= b;
+    if (swipeIn) {
+      el.style.opacity = t >= a ? 1 : 0;
+      el.style.transform = `translateX(${(1 - prog(t, a, SWIPE)) * 1080}px)`;
+    } else if (swipeOut) {
+      el.style.opacity = t < b + SWIPE ? 1 : 0;
+      el.style.transform = `translateX(${-prog(t, b, SWIPE) * 1080}px)`;
+    } else {
+      el.style.transform = '';
+      // only the outer edges (into f1, out of f3) fade; sceneOpacity already handles outside [a, b)
+      if (t >= a && t < b) el.style.opacity = Math.min(i === 0 ? prog(t, a - FADE / 2, FADE) : 1,
+                                                       i === FEATS.length - 1 ? 1 - prog(t, b - FADE / 2, FADE) : 1);
+    }
+  });
+
+  // problems
+  BUBBLES.forEach(([sel, dt]) => pop($(sel), t, at('problem', dt), { dy: 40 }));
+  slideUp($('#trouble'), t, at('problem', 0.1), { dy: 500 });
+  $('#trouble').style.transform += ` rotate(${Math.sin(t * 6) * 2}deg)`;
+
+  // solution
+  pop($('#sol-icon'), t, at('solution', 0.05), { from: 0.2, dur: 0.55 });
+  slideUp($('#sol-text'), t, at('solution', 0.3), { dy: 120, dur: 0.45 });
+
+  // features (the phone recording itself fades with the scene in ffmpeg)
+  for (const f of ['f1', 'f2', 'f3']) {
+    if (f === 'f1') slideUp($(`#sc-${f} .feat-card`), t, at(f, 0.1), { dy: 200, dur: 0.5 });
+    pop($(`#sc-${f} .feat-num`), t, at(f, 0.35), { from: 0.2, dur: 0.45 });
+  }
+
+  // Tonpei cameos: pop in, then bob gently
+  for (const [sel, sc, dt, side] of CAMEOS) {
+    const el = $(sel), t0 = at(sc, dt);
+    pop(el, t, t0, { from: 0.2, dy: 60, dur: 0.5 });
+    el.style.transform += ` rotate(${side * Math.sin((t - t0) * 5) * 4}deg)`;
+  }
+
+  // more features
+  pop($('#more-title'), t, at('more', 0.05), { from: 0.6 });
+  $$('#sc-more .chip').forEach((el, i) => pop(el, t, at('more', 0.3 + i * 0.2), { extra: 'translateX(-50%)', from: 0.3, dy: 30 }));
+
+  // stats with count-up
+  $$('#sc-stats .stat').forEach((el, i) => {
+    const t0 = at('stats', STAT_DT(i));
+    slideUp(el, t, t0, { dy: 80, dur: 0.4 });
+    const span = el.querySelector('[data-count]');
+    const v = Math.round(+span.dataset.count * easeOut(prog(t, t0, COUNT_DUR)));
+    span.textContent = v.toLocaleString('en-US');
+  });
+
+  // end
+  pop($('#end-icon'), t, at('end', 0.05), { from: 0.3 });
+  slideUp($('#end-sub'), t, at('end', 0.2), { dy: 60, dur: 0.4 });
+  pop($('#end-wm'), t, at('end', 0.3), { from: 0.7 });
+  pop($('#end-cta'), t, at('end', 0.6), { extra: 'translateX(-50%)', from: 0.5 });
+  slideUp($('#point'), t, at('end', 0.7), { dy: 600, dur: 0.6 });
+  $('#point').style.transform += ` rotate(${Math.sin(t * 5) * 3}deg)`;
+}
+window.setTime = setTime;
+</script>
+</body>
+</html>
