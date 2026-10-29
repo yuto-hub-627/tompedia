@@ -1,6 +1,6 @@
 ---
 name: tompedia-slides
-description: とんペディア／とんペディア_ラボのスライド資料を、Canvaの公式テンプレート（ブランドテンプレート「とんペディア テンプレート」）で作成する。「とんペディアのスライドを作って」「全体会の資料」「勉強会のスライド」「企業向けの提案資料」「イベント当日のスライド」「〇〇をスライドにして」など、とんペディアの資料を作る・Canvaに流し込む・直すときに使う。内容はaidlc-docsのmdで質問と回答を何往復かして固めてから、型ページを複製して文章を差し替える。
+description: とんペディア／とんペディア_ラボのスライド資料を、Canvaの公式テンプレート（ブランドテンプレート「とんペディア テンプレート」）で作成する。「とんペディアのスライドを作って」「全体会の資料」「勉強会のスライド」「企業向けの提案資料」「イベント当日のスライド」「〇〇をスライドにして」「団体ごとにQRコードのスライドを作って」など、とんペディアの資料を作る・Canvaに流し込む・直すときに使う。内容はaidlc-docsのmdで質問と回答を何往復かして固めてから、型ページを複製して文章を差し替える。
 ---
 
 # とんペディア スライド作成スキル（Canva）
@@ -13,6 +13,7 @@ description: とんペディア／とんペディア_ラボのスライド資料
 - `references/layout-catalog.md` … 22ページの型、差し替える要素、内容から型を選ぶ判断表
 - `references/extra-layouts.md` … テンプレートにない型（実例の資料から持ってくる18種）と、見つからなかった型
 - `references/question-template.md` … 資料ごとの質問mdのひな形
+- `scripts/make_qr.py` … QRコード画像を作って読み取り確認する（3-4）
 
 PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わない。.pptxが必要なときは、このスキルでCanvaに作ってから `export-design` で書き出す。
 
@@ -27,6 +28,8 @@ PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わな�
 ```
 
 ユーザーとのやりとりは **mdファイルで質問 → ユーザーが `[Answer]:` に回答** が基本（ユーザーの方針）。チャットで答えが返ってきた場合はそれも使う。
+リポジトリ（`yuto-hub-627/tompedia`）が使えない環境（claude.ai のチャットなど）では、同じ質問をチャットで聞き、記録はユーザーに渡すmdにまとめる。
+QRコード1件1枚のような、内容がはっきりした追加の依頼は質問mdを省いてよい（2026-10-20 の相互投票タイムはチャットの指示だけで作った）。
 
 ## Step 1：質問mdを書く（Inception）
 
@@ -92,6 +95,25 @@ PowerPoint版の `tonpedia-slides`（アカウントのスキル）は使わな�
 - ユーザーが渡した写真だけを使う。Drive → `upload-asset-from-url` かダウンロードして `create-upload-url`、Canvaにある写真 → `get-assets`。
 - `update_fill` で差し替える（`alt_text` に何の写真か）。
 - 写真がない写真枠は、型の写真のまま残し、最後に「差し替えが必要な写真枠：P5の背景…」とリストで伝える。
+
+### 3-4. QRコードのページ（投票・申込みなど、1件1枚）
+2026-10-20 の「相互投票タイム」（11団体×1枚）で確認した手順。
+1. 団体名とURLを `[["団体名", "URL"], ...]` のJSONにして、`scripts/make_qr.py` で画像を作る。全件「OK」（読み取れてURLが一致）になるまで次に進まない。
+   ```
+   pip install "qrcode[pil]==7.4.2" "opencv-python-headless==4.10.0.84"
+   python scripts/make_qr.py groups.json <scratchpad>/qr
+   ```
+2. 画像をCanvaにアップロードする：`create-upload-url` を件数分呼び、
+   `curl -sS -X POST -H "Content-Type: application/octet-stream" --data-binary @qrNN.png "<URL>"` で送る。返ってくる `mediaId` を控える。URLは1回きりで約30分で切れるので、取ったらすぐ送る。
+3. `merge-designs` で P6（見出し＋本文）を件数分並べる（`page_numbers: [6, 6, ...]`）。既存の資料に足すときは、別デザインで作ってから `modify_existing_design` の `insert_pages`（`source` にそのデザイン）で後ろに入れる。
+4. 1枚ごとに：
+   - ページタイトル：「〇〇タイム n/件数」
+   - 大見出し：団体名。`resize_element` で幅960。長い名前は「大学名\n団体名」の2行にする。**依頼にない大学名を推測で足さない。**
+   - 本文：「スマホのカメラで右のQRコードを\n読み取って、投票してください」。幅960、`position_element` で top 520・left 188。
+   - QR：`insert_fill`（`asset_id` に mediaId、top 250・left 1200・640×640、`alt_text` に「〇〇の投票ページのQRコード」）。
+   - スピーカーノート：読み上げの一言＋URL。
+5. ページIDと要素IDはページごとに違う。`read-design` の出力が大きいときはファイルに保存されるので、Pythonでテキスト要素（top 40／210／469）のIDだけ抜き出す。
+6. 後から画像の差し替えや代替テキストの修正で `update_fill` を使うと、画像が少し拡大されて余白が切れる。QRの白い余白（border 2）とカードの白地があるので読み取りには困らない。
 
 ## Step 4：プレビューして保存する
 
