@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the vertical Giving Campaign thank-you video (OPEN + 27.2s; 29.0s with the default 1.8s opening).
+# Builds the vertical Giving Campaign thank-you video (OPEN + 24.2s; 26.0s with the default 1.8s opening).
 # usage: ./build.sh <assetsDir> <footageDir> <workDir> <out.mp4>
 #   assetsDir: labo_logo.png wordmark.png tonpei_*.png
 #              gc_post.png (Canva GC post)  reports/r1..r8.png  (event report covers, exported from Canva)
@@ -14,12 +14,12 @@ assets="$(cd "$1" && pwd)"; footage="$(cd "$2" && pwd)"; work="$3"; out="$4"
 mkdir -p "$work"
 W=1080; H=1920; FPS=30
 OPEN=${OPEN:-1.8}   # length of the logo opening; passed to overlay.html
-DURATION=$(python3 -c "print($OPEN + 27.2)")   # = the end of S.end in overlay.html
+DURATION=$(python3 -c "print($OPEN + 24.2)")   # = the end of S.end in overlay.html
 # phone screen rect in the app scene (see #bezel / #sc-app.hole in overlay.html)
 PX=305; PY=430; PW=470; PH=962
 SCREEN_CROP="crop=1170:2392:0:140"   # the recording below the status bar
 APP_START=$(python3 -c "print($OPEN + 8.5 - 0.3)")   # app scene starts at OPEN+8.5 and fades in over 0.3s
-APP_LEN=6.1
+APP_LEN=4.1
 
 echo "== overlay frames"
 rm -rf "$work/frames"

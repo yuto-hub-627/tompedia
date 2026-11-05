@@ -183,10 +183,10 @@ const S = {
   open:   [0, OPEN],
   thanks: [OPEN + 0.0, OPEN + 5.0],
   result: [OPEN + 5.0, OPEN + 8.5],
-  app:    [OPEN + 8.5, OPEN + 14.0],
-  events: [OPEN + 14.0, OPEN + 17.5],
-  mvv:    [OPEN + 17.5, OPEN + 24.0],
-  end:    [OPEN + 24.0, OPEN + 27.21],
+  app:    [OPEN + 8.5, OPEN + 12.0],
+  events: [OPEN + 12.0, OPEN + 14.5],
+  mvv:    [OPEN + 14.5, OPEN + 21.0],
+  end:    [OPEN + 21.0, OPEN + 24.21],
 };
 const at = (scene, dt) => S[scene][0] + dt;
 const FADE = 0.3;
@@ -255,12 +255,12 @@ function setTime(t) {
 
   // app
   slideUp($('#app-head'), t, at('app', 0.1), { dy: 60, dur: 0.45 });
-  slideUp($('#app-card'), t, at('app', 0.4), { dy: 200 });
-  countUp($('#app-card .num'), t, at('app', 0.6), 1.2);
+  slideUp($('#app-card'), t, at('app', 0.3), { dy: 200 });
+  countUp($('#app-card .num'), t, at('app', 0.4), 1.0);
 
   // events
   pop($('#events-title'), t, at('events', 0.05), { extra: 'translateX(-50%)', from: 0.5 });
-  $$('.cover').forEach((el, i) => pop(el, t, at('events', 0.3 + i * 0.2), { from: 0.6, dy: 120, dur: 0.4, extra: `rotate(${COVERS[i][2]}deg)` }));
+  $$('.cover').forEach((el, i) => pop(el, t, at('events', 0.25 + i * 0.15), { from: 0.6, dy: 120, dur: 0.4, extra: `rotate(${COVERS[i][2]}deg)` }));
 
   // MVV: mission first, then the three values
   $('#sc-mvv .photo').style.transform = `scale(${1 + 0.08 * prog(t, at('mvv', -0.2), 6.9)})`;
