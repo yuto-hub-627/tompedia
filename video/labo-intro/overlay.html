@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Tompedia Labo intro overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800;900&display=block" rel="stylesheet">
+<style>
+  :root {
+    --purple: #825dab;
+    --purple-dark: #5b3d80;
+    --lavender: #efe7f8;
+    --yellow: #ffd23f;
+    --ink: #2b2233;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; background: transparent; overflow: hidden; }
+  body { font-family: "M PLUS Rounded 1c", sans-serif; color: var(--ink); position: relative; }
+  .abs { position: absolute; }
+  .center { left: 0; right: 0; text-align: center; }
+  .scene { inset: 0; opacity: 0; overflow: hidden; }
+  .white { background: #fff; }
+
+  /* photos: full-bleed, slow zoom. A missing file shows a labelled stand-in until the real photo arrives */
+  .ph { inset: 0; overflow: hidden; background: linear-gradient(150deg, #c9b4e3, #825dab); }
+  .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph.missing img { display: none; }
+  .ph.missing::after {
+    content: attr(data-label); position: absolute; left: 0; right: 0; top: 46%; text-align: center;
+    font-size: 64px; font-weight: 900; color: rgba(255,255,255,.85); white-space: pre-line;
+  }
+  .shade-b { left: 0; right: 0; bottom: 0; height: 900px; background: linear-gradient(transparent, rgba(43,34,51,.72)); }
+  .shade-t { left: 0; right: 0; top: 0; height: 520px; background: linear-gradient(rgba(43,34,51,.55), transparent); }
+
+  .pill {
+    background: #fff; color: var(--purple-dark); font-weight: 900; border-radius: 80px;
+    padding: 18px 48px; white-space: nowrap; box-shadow: 0 10px 0 rgba(91,61,128,.3);
+  }
+  .tonpei { position: absolute; }
+
+  /* opening */
+  #open-logo { width: 900px; left: 90px; top: 860px; }
+
+  /* slogan */
+  #sc-slogan { background: #000; }
+  #slogan { top: 640px; color: #fff; font-weight: 900; line-height: 1.22; }
+  #slogan .l1 { font-size: 96px; display: block; }
+  #slogan .l2 { font-size: 156px; display: block; letter-spacing: 2px; }
+  #slogan .l3 { font-size: 112px; display: block; }
+
+  /* labo */
+  #labo-head { top: 170px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+  #labo-head .pill { font-size: 50px; }
+  #labo-card { background: #fff; border-radius: 40px; padding: 34px 44px; box-shadow: 0 20px 50px rgba(43,34,51,.35); }
+  #labo-card img { width: 860px; display: block; }
+  #labo-msg {
+    left: 60px; right: 60px; top: 1180px; background: var(--purple); color: #fff; border-radius: 48px;
+    padding: 46px 40px; text-align: center; font-weight: 900; box-shadow: 0 20px 50px rgba(43,34,51,.4);
+  }
+  #labo-msg .a { font-size: 66px; display: block; }
+  #labo-msg .b { font-size: 112px; display: block; line-height: 1.2; }
+  #labo-msg .b em { font-style: normal; color: var(--yellow); }
+  #tp-cheer { width: 330px; left: 720px; top: 1600px; }
+
+  /* fields */
+  .panel { inset: 0; }
+  #fields-label { top: 150px; font-size: 48px; }
+  .field-tag { left: 70px; top: 250px; }
+  .field-tag .t {
+    display: inline-block; background: var(--yellow); color: var(--purple-dark); font-size: 170px; font-weight: 900;
+    padding: 6px 54px 14px; border-radius: 40px; box-shadow: 0 16px 0 rgba(91,61,128,.45); line-height: 1.15;
+  }
+  .field-tag .s { display: block; margin-top: 30px; font-size: 64px; font-weight: 900; color: #fff; text-shadow: 0 4px 18px rgba(0,0,0,.55); }
+  #fields-cap {
+    left: 60px; right: 60px; top: 1560px; background: #fff; border-radius: 48px; border: 6px solid var(--purple);
+    padding: 34px 20px; text-align: center; font-size: 58px; font-weight: 900; color: var(--purple-dark); white-space: nowrap;
+    box-shadow: 0 20px 50px rgba(43,34,51,.35);
+  }
+  #fields-cap em { font-style: normal; background: linear-gradient(transparent 60%, var(--yellow) 60%); }
+
+  /* app: ffmpeg puts the app recording under this layer at x305 y430 470x962; the scene has a hole there */
+  #sc-app { background: var(--lavender); }
+  #sc-app.hole {
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1080' height='1920'><path fill-rule='evenodd' d='M0 0H1080V1920H0Z M351 430H729A46 46 0 0 1 775 476V1346A46 46 0 0 1 729 1392H351A46 46 0 0 1 305 1346V476A46 46 0 0 1 351 430Z'/></svg>");
+  }
+  #app-bg { inset: 0; opacity: .28; filter: blur(14px); transform: scale(1.1); }
+  #app-head { top: 130px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  #app-head .pill { font-size: 46px; background: var(--purple); color: #fff; }
+  #app-head img { height: 120px; }
+  #bezel {
+    left: 289px; top: 414px; width: 502px; height: 994px; border-radius: 62px;
+    border: 16px solid #1d1626; box-shadow: 0 30px 70px rgba(43,34,51,.45);
+  }
+  #app-card {
+    left: 60px; right: 60px; top: 1470px; background: #fff; border-radius: 48px; border: 6px solid var(--purple);
+    padding: 30px 30px 36px; text-align: center; box-shadow: 0 20px 50px rgba(91,61,128,.3);
+  }
+  #app-card .rel { display: inline-block; background: var(--yellow); color: var(--purple-dark); font-size: 48px; font-weight: 900; padding: 8px 34px; border-radius: 40px; }
+  #app-card .users { font-size: 54px; font-weight: 900; margin-top: 10px; white-space: nowrap; }
+  #app-card .users .num { font-size: 130px; color: var(--purple); letter-spacing: -2px; }
+
+  /* events */
+  #events-tint { inset: 0; background: rgba(91,61,128,.55); }
+  #events-title { top: 150px; left: 50%; font-size: 64px; }
+  .cover { width: 400px; border-radius: 18px; box-shadow: 0 18px 40px rgba(0,0,0,.45); border: 6px solid #fff; }
+
+  /* future */
+  #future-text { top: 1180px; color: #fff; font-weight: 900; text-shadow: 0 6px 24px rgba(43,34,51,.8); line-height: 1.2; }
+  #future-text .a { font-size: 150px; display: block; }
+  #future-text .b { font-size: 150px; display: block; }
+  #future-text em { font-style: normal; color: var(--yellow); }
+  #tp-megaphone { width: 330px; left: 30px; top: 1600px; }
+
+  /* end */
+  #end-sub { top: 640px; font-size: 60px; font-weight: 800; color: var(--purple-dark); }
+  #end-logo { width: 940px; left: 70px; top: 760px; }
+  #end-cta {
+    top: 1030px; left: 50%; background: var(--purple); color: #fff; font-size: 60px; font-weight: 800;
+    padding: 26px 70px; border-radius: 80px; white-space: nowrap;
+  }
+  #point { width: 560px; left: 470px; top: 1300px; }
+</style>
+</head>
+<body>
+
+<div id="sc-open" class="scene abs white">
+  <img id="open-logo" class="abs" src="ASSETS/labo_logo.png" alt="とんペディア_ラボ">
+</div>
+
+<div id="sc-slogan" class="scene abs">
+  <div id="slogan" class="abs center"><span class="l1">東北大学を</span><span class="l2">世界一面白い</span><span class="l3">大学にする。</span></div>
+</div>
+
+<div id="sc-labo" class="scene abs">
+  <div class="ph abs" data-label="仮：活動風景①"><img src="ASSETS/photos/p1a.jpg" alt=""></div>
+  <div class="ph abs" data-label="仮：活動風景②"><img src="ASSETS/photos/p1b.jpg" alt=""></div>
+  <div class="ph abs" data-label="仮：活動風景③"><img src="ASSETS/photos/p1c.jpg" alt=""></div>
+  <div class="shade-t abs"></div><div class="shade-b abs"></div>
+  <div id="labo-head" class="abs">
+    <div class="pill">東北大学の学生団体</div>
+    <div id="labo-card"><img src="ASSETS/labo_logo.png" alt="とんペディア_ラボ"></div>
+  </div>
+  <div id="labo-msg" class="abs"><span class="a">どんな課題にも、</span><span class="b"><em>ワクワク</em>挑戦！</span></div>
+  <img id="tp-cheer" class="tonpei" src="ASSETS/tonpei_cheer.png" alt="">
+</div>
+
+<div id="sc-fields" class="scene abs">
+  <div class="panel abs">
+    <div class="ph abs" data-label="仮：開発の様子"><img src="ASSETS/photos/p3.jpg" alt=""></div>
+    <div class="shade-t abs"></div>
+    <div class="field-tag abs"><span class="t">開発</span><span class="s">アプリをつくる</span></div>
+  </div>
+  <div class="panel abs">
+    <div class="ph abs" data-label="仮：営業の様子"><img src="ASSETS/photos/p4.jpg" alt=""></div>
+    <div class="shade-t abs"></div>
+    <div class="field-tag abs"><span class="t">営業</span><span class="s">企業とつながる</span></div>
+  </div>
+  <div class="panel abs">
+    <div class="ph abs" data-label="仮：広報の様子"><img src="ASSETS/photos/p5.jpg" alt=""></div>
+    <div class="shade-t abs"></div>
+    <div class="field-tag abs"><span class="t">広報</span><span class="s">活動を届ける</span></div>
+  </div>
+  <div id="fields-cap" class="abs"><em>実践しながら</em>、スキルが身につく</div>
+</div>
+
+<div id="sc-app" class="scene abs">
+  <div id="app-bg" class="ph abs" data-label=""><img src="ASSETS/photos/p3.jpg" alt=""></div>
+  <div id="app-head" class="abs">
+    <div class="pill">ラボがつくったアプリ</div>
+    <img src="ASSETS/wordmark.png" alt="とんペディア">
+  </div>
+  <div id="bezel" class="abs"></div>
+  <div id="app-card" class="abs">
+    <div class="rel">2025.4.1 リリース</div>
+    <div class="users">現在 <span class="num" data-count="6720">0</span>人が利用中</div>
+  </div>
+</div>
+
+<div id="sc-events" class="scene abs">
+  <div class="ph abs" data-label="仮：イベントの様子①"><img src="ASSETS/photos/p2a.jpg" alt=""></div>
+  <div class="ph abs" data-label="仮：イベントの様子②"><img src="ASSETS/photos/p2b.jpg" alt=""></div>
+  <div id="events-tint" class="abs"></div>
+  <div id="events-title" class="pill abs">企業と連携したイベント</div>
+  <img class="cover abs" src="ASSETS/reports/r1.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r2.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r3.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r4.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r5.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r6.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r7.png" alt="">
+  <img class="cover abs" src="ASSETS/reports/r8.png" alt="">
+</div>
+
+<div id="sc-future" class="scene abs">
+  <div class="ph abs" data-label="仮：集合写真"><img src="ASSETS/photos/p6.jpg" alt=""></div>
+  <div class="shade-b abs"></div>
+  <div id="future-text" class="abs center"><span class="a"><em>世界一</em>面白い</span><span class="b">大学へ。</span></div>
+  <img id="tp-megaphone" class="tonpei" src="ASSETS/tonpei_megaphone.png" alt="">
+</div>
+
+<div id="sc-end" class="scene abs white">
+  <div id="end-sub" class="abs center">東北大学の学生団体</div>
+  <img id="end-logo" class="abs" src="ASSETS/labo_logo.png" alt="とんペディア_ラボ">
+  <div id="end-cta" class="abs">くわしくはホームページへ</div>
+  <img id="point" class="abs" src="ASSETS/tonpei_point.png" alt="">
+</div>
+
+<script>
+// All motion is a pure function of time so every frame renders deterministically.
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const prog = (t, t0, dur) => clamp((t - t0) / dur);
+const easeOut = p => 1 - Math.pow(1 - p, 3);
+const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const easeOutBack = p => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+document.querySelectorAll('.ph img').forEach(img => {
+  img.addEventListener('error', () => img.parentNode.classList.add('missing'));
+  if (img.complete && !img.naturalWidth) img.parentNode.classList.add('missing');
+});
+
+// scene windows [start, end] in seconds; OPEN is the logo opening, passed by build.sh as ?open=
+const OPEN = +(new URLSearchParams(location.search).get('open') ?? 1.8);
+const S = {
+  open:   [0, OPEN],
+  slogan: [OPEN + 0.0, OPEN + 3.0],
+  labo:   [OPEN + 3.0, OPEN + 9.0],
+  fields: [OPEN + 9.0, OPEN + 14.5],
+  app:    [OPEN + 14.5, OPEN + 20.0],
+  events: [OPEN + 20.0, OPEN + 24.5],
+  future: [OPEN + 24.5, OPEN + 28.0],
+  end:    [OPEN + 28.0, OPEN + 31.21],
+};
+const at = (scene, dt) => S[scene][0] + dt;
+const FADE = 0.3;
+const PANEL = (S.fields[1] - S.fields[0]) / 3, SWIPE = 0.4;
+
+// sound cues [time, sound, gain, pitch]; build.sh reads them via window.SFX_CUES.
+// n1..n7 are the narration recordings (N1..N7 in the storyboard); missing ones are silent.
+const SFX_CUES = [];
+const cue = (t, name, gain = 1, pitch = 1) => SFX_CUES.push([+t.toFixed(3), name, gain, pitch]);
+cue(at('slogan', 0.2), 'doon', 1.4);
+cue(at('slogan', 0.3), 'n1', 1.1);
+cue(at('labo', 0.15), 'n2', 1);
+cue(at('fields', 0.15), 'n3', 1);
+cue(at('fields', PANEL), 'whoosh', 0.35);
+cue(at('fields', 2 * PANEL), 'whoosh', 0.35);
+cue(at('app', 0.15), 'n4', 1);
+cue(at('events', 0.05), 'pop', 0.6);
+cue(at('events', 0.15), 'n5', 1);
+cue(at('future', 0.15), 'n6', 1);
+cue(at('end', 0.05), 'chime', 0.5);
+cue(at('end', 0.08), 'sparkle', 0.3);
+cue(at('end', 0.15), 'n7', 1.2);
+window.SFX_CUES = SFX_CUES;
+
+// a scene fades in over the previous one and stays opaque until the next has fully covered it
+function sceneOpacity(t, [a, b], first) {
+  const h = FADE / 2;
+  if (t < a - h || t >= b + h) return 0;
+  return first ? 1 : prog(t, a - h, FADE);
+}
+function pop(el, t, t0, { dur = 0.45, from = 0.4, dy = 0, extra = '' } = {}) {
+  const p = prog(t, t0, dur);
+  el.style.opacity = clamp(p * 3);
+  el.style.transform = `${extra} translateY(${(1 - easeOut(p)) * dy}px) scale(${from + (1 - from) * easeOutBack(p)})`;
+}
+function slideUp(el, t, t0, { dur = 0.5, dy = 300 } = {}) {
+  const p = easeOut(prog(t, t0, dur));
+  el.style.opacity = clamp(p * 2);
+  el.style.transform = `translateY(${(1 - p) * dy}px)`;
+}
+function kenBurns(el, t, t0, dur, from = 1.0, to = 1.08) {
+  el.style.transform = `scale(${from + (to - from) * prog(t, t0, dur)})`;
+}
+function bob(el, t, t0, side = 1) { el.style.transform += ` rotate(${side * Math.sin((t - t0) * 5) * 4}deg)`; }
+
+// event report covers: scattered two-column stack, each slightly tilted
+const COVERS = [[80, 300, -5], [590, 340, 4], [100, 640, 3], [580, 690, -4], [70, 990, -3], [600, 1030, 5], [110, 1330, 4], [570, 1370, -3]];
+$$('.cover').forEach((el, i) => { el.style.left = COVERS[i][0] + 'px'; el.style.top = COVERS[i][1] + 'px'; });
+
+function setTime(t) {
+  const names = Object.keys(S);
+  names.forEach((n, i) => { $(`#sc-${n}`).style.opacity = sceneOpacity(t, S[n], i === 0); });
+  $('#sc-app').classList.toggle('hole', t >= S.app[0] - FADE && t < S.app[1] + FADE);
+
+  // opening
+  pop($('#open-logo'), t, 0.15, { from: 0.3, dur: 0.55 });
+
+  // slogan: slams in with the ドーン, a short shake, then a slow push-in
+  {
+    const t0 = at('slogan', 0.2), p = prog(t, t0, 0.18);
+    const shake = t >= t0 && t < t0 + 0.3 ? Math.sin((t - t0) * 90) * 14 * (1 - prog(t, t0, 0.3)) : 0;
+    const el = $('#slogan');
+    el.style.opacity = p;
+    el.style.transform = `translate(${shake}px, ${shake * 0.6}px) scale(${(1.35 - 0.35 * easeOut(p)) * (1 + 0.05 * prog(t, t0, 2.8))})`;
+  }
+
+  // labo: three photos crossfading, the name first, then the message
+  const lp = $$('#sc-labo .ph'), seg = (S.labo[1] - S.labo[0]) / 3;
+  lp.forEach((el, i) => {
+    const a = at('labo', i * seg);
+    el.style.opacity = i === 0 ? 1 : prog(t, a - 0.2, 0.4);
+    kenBurns(el, t, a - 0.2, seg + 0.6);
+  });
+  {
+    const head = $('#labo-head'), t0 = at('labo', 0.2), out = at('labo', 3.0);
+    slideUp(head, t, t0, { dy: 80, dur: 0.5 });
+    head.style.opacity = Math.min(+head.style.opacity, 1 - prog(t, out, 0.3));
+    pop($('#labo-msg'), t, at('labo', 3.1), { from: 0.5, dy: 80 });
+    pop($('#tp-cheer'), t, at('labo', 3.5), { from: 0.2, dy: 60, dur: 0.5 });
+    bob($('#tp-cheer'), t, at('labo', 3.5));
+  }
+
+  // fields: three panels that swipe left like pages; the caption stays
+  $$('#sc-fields .panel').forEach((el, i) => {
+    const a = at('fields', i * PANEL);
+    const inP = i === 0 ? 1 : prog(t, a, SWIPE), outP = i === 2 ? 0 : prog(t, a + PANEL, SWIPE);
+    el.style.transform = `translateX(${(1 - easeInOut(inP)) * 1080 - easeInOut(outP) * 1080}px)`;
+    kenBurns(el.querySelector('.ph'), t, a, PANEL + SWIPE, 1.0, 1.06);
+    pop(el.querySelector('.field-tag .t'), t, a + (i === 0 ? 0.15 : 0.3), { from: 0.3, dur: 0.45 });
+    slideUp(el.querySelector('.field-tag .s'), t, a + (i === 0 ? 0.35 : 0.5), { dy: 40, dur: 0.4 });
+  });
+  slideUp($('#fields-cap'), t, at('fields', 0.4), { dy: 200 });
+
+  // app
+  slideUp($('#app-head'), t, at('app', 0.1), { dy: 60, dur: 0.45 });
+  slideUp($('#app-card'), t, at('app', 0.4), { dy: 200 });
+  {
+    const span = $('#app-card [data-count]');
+    span.textContent = Math.round(6720 * easeOut(prog(t, at('app', 0.6), 1.2))).toLocaleString('en-US');
+  }
+
+  // events: event photos behind, report covers dealt onto the screen
+  $$('#sc-events .ph').forEach((el, i) => {
+    const a = at('events', i * 2.25);
+    el.style.opacity = i === 0 ? 1 : prog(t, a - 0.2, 0.4);
+    kenBurns(el, t, a - 0.2, 2.9);
+  });
+  pop($('#events-title'), t, at('events', 0.05), { extra: 'translateX(-50%)', from: 0.5 });
+  $$('.cover').forEach((el, i) => pop(el, t, at('events', 0.35 + i * 0.22), { from: 0.6, dy: 120, dur: 0.4, extra: `rotate(${COVERS[i][2]}deg)` }));
+
+  // future
+  kenBurns($('#sc-future .ph'), t, at('future', -0.2), 3.9, 1.0, 1.1);
+  slideUp($('#future-text'), t, at('future', 0.3), { dy: 120, dur: 0.5 });
+  pop($('#tp-megaphone'), t, at('future', 0.7), { from: 0.2, dy: 60, dur: 0.5 });
+  bob($('#tp-megaphone'), t, at('future', 0.7), -1);
+
+  // end
+  slideUp($('#end-sub'), t, at('end', 0.1), { dy: 50, dur: 0.4 });
+  pop($('#end-logo'), t, at('end', 0.05), { from: 0.5 });
+  pop($('#end-cta'), t, at('end', 0.6), { extra: 'translateX(-50%)', from: 0.5 });
+  slideUp($('#point'), t, at('end', 0.7), { dy: 600, dur: 0.6 });
+  $('#point').style.transform += ` rotate(${Math.sin(t * 5) * 3}deg)`;
+}
+window.setTime = setTime;
+</script>
+</body>
+</html>
