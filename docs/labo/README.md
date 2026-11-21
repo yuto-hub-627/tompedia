@@ -24,5 +24,7 @@ Canva の紹介系スライドから読み取った、とんペディア_ラボ�
 | SoftBank_とんペディア LT交流会資料 | 2026-03-31 | [開く](https://www.canva.com/d/c7tI1xqUkiaeBIs) |
 | とんペディア_ラボキックオフ資料 | 2026-04-21・04-27 | [開く](https://www.canva.com/d/4hDukrsN6SpFcRd) |
 | とんペディア テンプレート | 2026年秋（いちばん新しい数字） | [開く](https://www.canva.com/d/meZR_R_yFZmYBeV) |
+| ポスター改（ものづくりExpo ポスターと同じ中身） | 2026年8月ごろ | [開く](https://www.canva.com/d/L_sqHjd5wEgnqAG) |
+| 団体ウェブサイトデザイン | 2026-11-20（いちばん新しい） | [開く](https://www.canva.com/d/7by4IXga-1cfoB0) |
 | 2026-10-20_GivingCampaignとは？ | 2026-10-20 全体会・中西 | [開く](https://www.canva.com/d/IoiRYIzI1X72PQS) |
 | とんペディア_火曜全体会のこれから | 2026年秋 | [開く](https://www.canva.com/d/Ogr5TGWrvgcK5_X) |
