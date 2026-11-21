@@ -24,7 +24,7 @@
 
 ## 文字
 
-- フォントは1種類（`sans`）。Canva の元のフォント名はツールから読み取れなかったので、ここでは丸ゴシックの「M PLUS Rounded 1c」を代わりに指定している。Canva では、テンプレートの文字をコピーして使えば元のフォントのまま。
+- フォントは「Zen Maru Gothic」（`sans`）。太さを選べる丸ゴシックで、テンプレートの文字はこれ。ほかに「Kosugi Maru」と「つなぎゴシック」もたまに使うが、役割は決めていない。迷ったら Zen Maru Gothic。
 - 太さは、見出しが 900（heavy）・700（bold）、本文も 700。細い文字は機能名などのラベル（`label`）だけ。
 - 大見出しと表紙は行間 1.6・字間 0.05em、本文ページの文字は行間 1.4。
 - 大きさの段：`chapter-number` 199 → `display` 128 → `big-number` 140 → `photo-title` 118 → `sales-title` 90 → `chapter-title` 85 → `card-heading` 69 → `cover-title` 64 → `statement` 60 → `byline` 56 → `lead` 47 → `page-label` 43 → `body` 42 → `label` 31 → `small` 28 → `caption` 20。`caption` より小さくしない。
@@ -45,7 +45,12 @@
 ## ロゴとマスコット
 
 - アプリの話は `tompedia-app-logo`、団体の話は `tompedia-labo-logo-jp`、最後のページは `tompedia-labo-logo`、本文ページの右上は `tompedia-mark-small`。ロゴの色・形は変えない。
-- マスコットは紫のパーカーのぶた。1枚に1匹まで、文の意味に合うポーズ（つくろう・まなぼう・つながろう・CHECK）を選ぶ。
+- マスコットは「とん平」（紫のパーカーのぶた）。1枚に1匹まで、文の意味に合うポーズ（つくろう・まなぼう・つながろう・CHECK）を選ぶ。
+
+## 素材の置き場所
+
+- ロゴ・とん平のイラストの元ファイルは Google ドライブの「tompedia / とんペディアラボ画像素材」にある（ロゴは「ロゴ等」、とん平は「とん平 イラスト全集」など）。この本のロゴととん平は、テンプレートの画像から切り抜いた見本。大きく使うときや新しく作るときは、ドライブの元ファイルを使う。
+- とん平の使い方は、ドライブの「とん平 公式デザインガイドライン」に従う。
 
 ## 写真
 
@@ -61,6 +66,26 @@
 ## ページの型
 
 19 の型をコンポーネントとしてまとめた（表紙・構成・本文・写真・数字・図解・人・締め）。それぞれの README に元のページと決まりを書いた。テンプレートの全ページの画像は `assets/Pages/`。
+
+## 素材（Google ドライブ）
+
+素材はリポジトリに入れず、ドライブで管理する（2026-11-21 決定）。
+
+- フォルダ：[tompedia / とんペディアラボ画像素材](https://drive.google.com/drive/folders/156G8vokUC5QBFRuGnFbb5qVhZo3jbAQl)
+  - [ロゴ等](https://drive.google.com/drive/folders/1G4VUf2bdpKsOD5svtgZdbiI7go5Tb4DV)：公式ロゴ。PNG・WebP（各1024px）と SVG
+    - アプリ：`Tompedia-logo-color-1024`（アイコン）、`Tompedia-wordmark-en-color／en-white`、`Tompedia-wordmark-jp-light／jp-white`、`logo-reversed-iosRounded`（.png・.svg）
+    - ラボ：`Tompedia_Labo-wordmark-en-color／en-white`、`Tompedia_Labo-wordmark-jp-color／jp-white`、`Tompedia_Labo-united-en-color／en-white`、`labo_with_icon.png`
+  - とん平の日常：`Tompedia-logo-knockout`（.png・.svg）、`Tompedia-logo-white.svg` など
+  - とん平 イラスト全集、つよつよエンジニアのとん平：とん平のイラスト
+  - `とん平 公式デザインガイドライン.docx`：とん平の使い方の決まり
+
+## よく使うフォント
+
+| フォント | 役割 |
+|---|---|
+| Zen Maru Gothic | メイン（テンプレートの文字）。太さは 500・700・900 を使う |
+| Kosugi Maru | たまに使う（役割は決めていない） |
+| つなぎゴシック | たまに使う（役割は決めていない） |
 
 ## 色の一覧
 
@@ -142,5 +167,4 @@
 
 ## まだ決まっていないこと
 
-- Canva で使っているフォントの正式な名前（ツールから読み取れなかったので、デザインシステムでは丸ゴシックの「M PLUS Rounded 1c」で代用している）
 - 営業部のオレンジ `#ed810d` は白地で読みにくい（2.71:1）。文字に使う範囲を今のまま（大きなタイトルだけ）にするか
