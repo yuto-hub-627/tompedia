@@ -4,7 +4,8 @@
 
 - デザインシステム（claude.ai）：https://claude.ai/artifact/KHP9tBpsfqWhsaXkfG7ZYA （色・文字・ロゴ・マスコット・全ページの見本）
 - 元のテンプレート（Canva）：[とんペディア テンプレート（22ページ）](https://www.canva.com/d/meZR_R_yFZmYBeV)／[短い版（4ページ）](https://www.canva.com/d/5yFeQ4LBiWF7vpR)／[MD対応用（20ページ）](https://www.canva.com/d/oi4Fnd5-WWPMfDg)
-- 新しいスライドは、テンプレートの近いページを Canva で複製して作る。保存先は Canva の「中西悠仁」フォルダ。
+- 新しいスライドは、テンプレートの近いページを Canva で複製して作る。保存先は Canva の「とんペディアラボ」フォルダ。
+- **注意（2026-11-22）**：上の Canva のリンク（テンプレート）は、以前連携していたとんペディアラボのアカウントのもの。今は中西悠仁の個人アカウントに切り替えたので、Claude からは読めない
 
 ## まず守ること
 
